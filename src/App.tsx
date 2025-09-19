@@ -1,0 +1,169 @@
+import React from 'react';
+import { AppProvider, useApp } from './components/AppContext';
+import { Navbar } from './components/Navbar';
+import { HomePage } from './components/HomePage';
+import { NewsPage } from './components/NewsPage';
+import { TablePage } from './components/TablePage';
+import { CalendarPage } from './components/CalendarPage';
+import { AuthPage } from './components/AuthPage';
+import { SettingsPage } from './components/SettingsPage';
+import { TeamDetail } from './components/TeamDetail';
+import { MatchDetail } from './components/MatchDetail';
+import { HeadToHead } from './components/HeadToHead';
+import { ProfilePage } from './components/ProfilePage';
+import { Toaster } from './components/ui/sonner';
+
+interface AppState {
+  selectedNewsId?: string;
+  selectedMatchId?: string;
+  selectedTeamId?: string;
+  headToHeadTeams?: [string, string];
+}
+
+const AppContent: React.FC = () => {
+  const { currentPage, setCurrentPage } = useApp();
+  const [appState, setAppState] = React.useState<AppState>({});
+
+  const handleViewMatchDetail = (matchId: string) => {
+    setAppState(prev => ({ ...prev, selectedMatchId: matchId }));
+    setCurrentPage('match-detail');
+  };
+
+  const handleViewNewsDetail = (newsId: string | undefined) => {
+    setAppState(prev => ({ ...prev, selectedNewsId: newsId }));
+  };
+
+  const handleViewTeamDetail = (teamId: string) => {
+    setAppState(prev => ({ ...prev, selectedTeamId: teamId }));
+    setCurrentPage('team-detail');
+  };
+
+  const handleViewHeadToHead = (teamAId: string, teamBId: string) => {
+    setAppState(prev => ({ ...prev, headToHeadTeams: [teamAId, teamBId] }));
+    setCurrentPage('head-to-head');
+  };
+
+  const handleBackNavigation = () => {
+    // Resetear estado y volver a la página anterior
+    setAppState({});
+    setCurrentPage('home');
+  };
+
+  const renderCurrentPage = () => {
+    switch (currentPage) {
+      case 'home':
+        return (
+          <HomePage 
+            onViewMatchDetail={handleViewMatchDetail}
+            onViewTeamDetail={handleViewTeamDetail}
+          />
+        );
+      
+      case 'news':
+        return (
+          <NewsPage 
+            selectedNewsId={appState.selectedNewsId}
+            onSelectNews={handleViewNewsDetail}
+          />
+        );
+      
+      case 'table':
+        return (
+          <TablePage 
+            onViewTeamDetail={handleViewTeamDetail}
+          />
+        );
+      
+      case 'calendar':
+        return (
+          <CalendarPage 
+            onViewMatchDetail={handleViewMatchDetail}
+          />
+        );
+      
+      case 'auth':
+        return <AuthPage />;
+      
+      case 'settings':
+        return <SettingsPage />;
+
+      case 'profile':
+        return (
+          <ProfilePage 
+            onViewTeamDetail={handleViewTeamDetail}
+          />
+        );
+
+      case 'team-detail':
+        return appState.selectedTeamId ? (
+          <TeamDetail 
+            teamId={appState.selectedTeamId}
+            onBack={handleBackNavigation}
+            onViewMatch={handleViewMatchDetail}
+            onViewHeadToHead={(opponentId) => 
+              handleViewHeadToHead(appState.selectedTeamId!, opponentId)
+            }
+          />
+        ) : (
+          <HomePage onViewMatchDetail={handleViewMatchDetail} />
+        );
+
+      case 'match-detail':
+        return appState.selectedMatchId ? (
+          <MatchDetail 
+            matchId={appState.selectedMatchId}
+            onBack={handleBackNavigation}
+            onViewTeamDetail={handleViewTeamDetail}
+          />
+        ) : (
+          <HomePage onViewMatchDetail={handleViewMatchDetail} />
+        );
+
+      case 'head-to-head':
+        return appState.headToHeadTeams ? (
+          <HeadToHead 
+            teamAId={appState.headToHeadTeams[0]}
+            teamBId={appState.headToHeadTeams[1]}
+            onBack={handleBackNavigation}
+          />
+        ) : (
+          <HomePage onViewMatchDetail={handleViewMatchDetail} />
+        );
+      
+      default:
+        return (
+          <HomePage 
+            onViewMatchDetail={handleViewMatchDetail}
+            onViewTeamDetail={handleViewTeamDetail}
+          />
+        );
+    }
+  };
+
+  const handleSearch = (query: string) => {
+    console.log('Searching for:', query);
+    // En una aplicación real, esto implementaría la búsqueda
+    // Podría filtrar equipos, noticias, jugadores, etc.
+  };
+
+  return (
+    <div className="min-h-screen bg-background">
+      <Navbar 
+        onSearch={handleSearch}
+        onNavigateToProfile={() => setCurrentPage('profile')}
+      />
+      <main className="flex-1">
+        {renderCurrentPage()}
+      </main>
+      <Toaster position="bottom-right" />
+    </div>
+  );
+};
+
+export default function App() {
+  return (
+    <AppProvider>
+      <AppContent />
+    </AppProvider>
+  );
+}
