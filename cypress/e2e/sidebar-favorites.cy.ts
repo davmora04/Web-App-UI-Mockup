@@ -66,14 +66,14 @@ describe('Sidebar and Favorites Functionality', () => {
     });
 
     it('should show hover effects on filter buttons', () => {
-      // Test basic button interactions
-      cy.get('button').first().should('be.visible');
+      // Test visible button interactions
+      cy.get('button').contains('La Liga').should('be.visible');
       
       // Test hover states exist (CSS classes)
-      cy.get('button').should('have.css', 'transition');
+      cy.get('button').contains('La Liga').should('have.css', 'transition');
       
       // Test button click interaction
-      cy.get('button').first().click();
+      cy.get('button').contains('La Liga').click();
       cy.wait(300);
     });
   });

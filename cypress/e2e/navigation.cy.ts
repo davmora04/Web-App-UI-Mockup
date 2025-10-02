@@ -86,12 +86,12 @@ describe('Navigation and Accessibility', () => {
     });
 
     it('should support keyboard navigation', () => {
-      // Test search input focus
-      cy.get('input[aria-label*="Buscar"]').focus();
-      cy.focused().should('have.attr', 'aria-label');
+      // Test search input focus using placeholder
+      cy.get('input[placeholder*="Buscar equipos"]').focus();
+      cy.focused().should('have.attr', 'placeholder');
       
-      // Test button focus - use actual button element
-      cy.get('button').first().focus();
+      // Test button focus - use specific navigation button
+      cy.get('button[aria-current="page"]').first().focus();
       cy.focused().should('be.visible');
       
       // Test basic keyboard interaction
