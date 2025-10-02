@@ -4,11 +4,12 @@ import { Button } from './ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from './ui/card';
 import { Badge } from './ui/badge';
 import { Separator } from './ui/separator';
-import { useApp, matches, Match } from './AppContext';
+import { useApp, matches } from './AppContext';
 
 interface MatchDetailProps {
   matchId: string;
   onBack?: () => void;
+  onViewTeamDetail?: (teamId: string) => void;
 }
 
 // Datos mock para alineaciones y eventos
@@ -55,7 +56,7 @@ const mockEvents = [
   { minute: 78, type: 'substitution', team: 'home', player: 'Modrić → Bellingham', description: 'Cambio: Sale Modrić, entra Bellingham' }
 ];
 
-export const MatchDetail: React.FC<MatchDetailProps> = ({ matchId, onBack }) => {
+export const MatchDetail: React.FC<MatchDetailProps> = ({ matchId, onBack, onViewTeamDetail }) => {
   const { t } = useApp();
   
   const match = matches.find(m => m.id === matchId);
@@ -150,7 +151,7 @@ export const MatchDetail: React.FC<MatchDetailProps> = ({ matchId, onBack }) => 
             <div className="flex flex-col items-center space-y-2 flex-1">
               <span className="text-4xl">{match.awayTeam.logo}</span>
               <h2 className="text-xl font-bold text-center">{match.awayTeam.name}</h2>
-              <Badge variant="outline">{t('away')}</Badge>
+              <Badge variant="outline">{t('awayTeam')}</Badge>
             </div>
           </div>
 

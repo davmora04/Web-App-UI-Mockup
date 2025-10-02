@@ -113,7 +113,7 @@ export const MatchCard: React.FC<MatchCardProps> = ({ match, onViewDetail }) => 
 
           {/* Marcador o VS */}
           <div className="flex items-center justify-center min-w-[60px]">
-            {match.score && match.status === 'finished' ? (
+            {match.score && (match.status === 'finished' || match.status === 'live') ? (
               <div className="text-center">
                 <div className="text-2xl font-bold">
                   {match.score.home} - {match.score.away}
@@ -138,7 +138,7 @@ export const MatchCard: React.FC<MatchCardProps> = ({ match, onViewDetail }) => 
               <div className="text-right">
                 <p className="font-medium">{match.awayTeam.name}</p>
                 <Badge variant="outline" className="text-xs">
-                  {t('away')}
+                  {t('awayTeam')}
                 </Badge>
               </div>
               <span className="text-2xl">{match.awayTeam.logo}</span>

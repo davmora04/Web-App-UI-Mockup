@@ -1,4 +1,5 @@
-import React, { createContext, useContext, useState, ReactNode } from 'react';
+import React, { createContext, useContext, useState, useEffect, ReactNode } from 'react';
+import { useLocalStorage, useFavorites } from '../hooks';
 
 // Tipos de datos
 export interface Team {
@@ -149,146 +150,31 @@ export const news: News[] = [
   }
 ];
 
-// Traducciones
-export const translations = {
-  es: {
-    // Navigation
-    home: 'Inicio',
-    news: 'Noticias',
-    table: 'Tabla',
-    calendar: 'Calendario',
-    login: 'Iniciar Sesión',
-    language: 'Idioma',
-    theme: 'Tema',
-    
-    // Home
-    latestMatches: 'Últimos Partidos',
-    viewDetail: 'Ver Detalle',
-    filters: 'Filtros',
-    league: 'Liga',
-    season: 'Temporada',
-    
-    // Table
-    position: 'Pos',
-    team: 'Equipo',
-    played: 'PJ',
-    won: 'G',
-    drawn: 'E',
-    lost: 'P',
-    goalsFor: 'GF',
-    goalsAgainst: 'GC',
-    goalDifference: 'DG',
-    points: 'Pts',
-    form: 'Forma',
-    exportCSV: 'Exportar CSV',
-    
-    // Auth
-    signUp: 'Registrarse',
-    signIn: 'Iniciar Sesión',
-    email: 'Correo Electrónico',
-    password: 'Contraseña',
-    confirmPassword: 'Confirmar Contraseña',
-    
-    // Settings
-    settings: 'Configuración',
-    accessibility: 'Accesibilidad',
-    textSize: 'Tamaño de Texto',
-    darkMode: 'Modo Oscuro',
-    notifications: 'Notificaciones',
-    profile: 'Perfil',
-    favorites: 'Favoritos',
-    
-    // Match
-    vs: 'vs',
-    finished: 'Finalizado',
-    live: 'En Vivo',
-    scheduled: 'Programado',
-    home: 'Local',
-    away: 'Visitante',
-    
-    // News
-    readMore: 'Leer Más',
-    source: 'Fuente',
-    category: 'Categoría'
-  },
-  en: {
-    // Navigation
-    home: 'Home',
-    news: 'News',
-    table: 'Table',
-    calendar: 'Calendar',
-    login: 'Sign In',
-    language: 'Language',
-    theme: 'Theme',
-    
-    // Home
-    latestMatches: 'Latest Matches',
-    viewDetail: 'View Detail',
-    filters: 'Filters',
-    league: 'League',
-    season: 'Season',
-    
-    // Table
-    position: 'Pos',
-    team: 'Team',
-    played: 'P',
-    won: 'W',
-    drawn: 'D',
-    lost: 'L',
-    goalsFor: 'GF',
-    goalsAgainst: 'GA',
-    goalDifference: 'GD',
-    points: 'Pts',
-    form: 'Form',
-    exportCSV: 'Export CSV',
-    
-    // Auth
-    signUp: 'Sign Up',
-    signIn: 'Sign In',
-    email: 'Email',
-    password: 'Password',
-    confirmPassword: 'Confirm Password',
-    
-    // Settings
-    settings: 'Settings',
-    accessibility: 'Accessibility',
-    textSize: 'Text Size',
-    darkMode: 'Dark Mode',
-    notifications: 'Notifications',
-    profile: 'Profile',
-    favorites: 'Favorites',
-    
-    // Match
-    vs: 'vs',
-    finished: 'Finished',
-    live: 'Live',
-    scheduled: 'Scheduled',
-    home: 'Home',
-    away: 'Away',
-    
-    // News
-    readMore: 'Read More',
-    source: 'Source',
-    category: 'Category'
-  }
-};
+// Import translations from dedicated files
+import { useTranslation } from '../hooks/useTranslation';
+
+// Import types
+import { Language, TranslationKey } from '../locales';
 
 // Contexto
 interface AppContextType {
-  language: 'es' | 'en';
+  language: Language;
   theme: 'light' | 'dark';
   currentPage: string;
   selectedLeague: string;
   selectedSeason: string;
   favorites: Team[];
-  setLanguage: (language: 'es' | 'en') => void;
+  setLanguage: (language: Language) => void;
   setTheme: (theme: 'light' | 'dark') => void;
   setCurrentPage: (page: string) => void;
   setSelectedLeague: (league: string) => void;
   setSelectedSeason: (season: string) => void;
   addToFavorites: (team: Team) => void;
   removeFromFavorites: (teamId: string) => void;
-  t: (key: string) => string;
+  t: (key: TranslationKey, params?: Record<string, string | number>) => string;
+  formatRelativeTime: (date: Date | string) => string;
+  formatDate: (date: Date | string, options?: Intl.DateTimeFormatOptions) => string;
+  formatTime: (date: Date | string, options?: Intl.DateTimeFormatOptions) => string;
 }
 
 const AppContext = createContext<AppContextType | undefined>(undefined);
@@ -306,26 +192,49 @@ interface AppProviderProps {
 }
 
 export const AppProvider: React.FC<AppProviderProps> = ({ children }) => {
-  const [language, setLanguage] = useState<'es' | 'en'>('es');
-  const [theme, setTheme] = useState<'light' | 'dark'>('dark');
+  // Use custom hooks for persistent storage
+  const [language, setLanguage] = useLocalStorage<'es' | 'en'>('statfut-language', 'es');
+  const [theme, setTheme] = useLocalStorage<'light' | 'dark'>('statfut-theme', 'dark');
   const [currentPage, setCurrentPage] = useState('home');
-  const [selectedLeague, setSelectedLeague] = useState('laliga');
-  const [selectedSeason, setSelectedSeason] = useState('2024/25');
-  const [favorites, setFavorites] = useState<Team[]>([]);
+  const [selectedLeague, setSelectedLeague] = useLocalStorage('statfut-selected-league', 'laliga');
+  const [selectedSeason, setSelectedSeason] = useLocalStorage('statfut-selected-season', '2024/25');
+  
+  // Use custom favorites hook with useReducer
+  const {
+    favorites,
+    addToFavorites: addFavorite,
+    removeFromFavorites: removeFavorite,
+    loadFavorites
+  } = useFavorites();
+
+  // Load favorites from localStorage on mount
+  useEffect(() => {
+    const savedFavorites = localStorage.getItem('statfut-favorites');
+    if (savedFavorites) {
+      try {
+        const parsedFavorites = JSON.parse(savedFavorites);
+        loadFavorites(parsedFavorites);
+      } catch (error) {
+        console.warn('Error loading favorites from localStorage:', error);
+      }
+    }
+  }, [loadFavorites]);
+
+  // Save favorites to localStorage when they change
+  useEffect(() => {
+    localStorage.setItem('statfut-favorites', JSON.stringify(favorites));
+  }, [favorites]);
 
   const addToFavorites = (team: Team) => {
-    if (!favorites.find(t => t.id === team.id)) {
-      setFavorites([...favorites, team]);
-    }
+    addFavorite(team);
   };
 
   const removeFromFavorites = (teamId: string) => {
-    setFavorites(favorites.filter(t => t.id !== teamId));
+    removeFavorite(teamId);
   };
 
-  const t = (key: string): string => {
-    return translations[language][key as keyof typeof translations['es']] || key;
-  };
+  // Use the advanced translation hook
+  const { t, formatRelativeTime, formatDate, formatTime } = useTranslation(language);
 
   // Aplicar tema a la clase del document
   React.useEffect(() => {
@@ -346,7 +255,10 @@ export const AppProvider: React.FC<AppProviderProps> = ({ children }) => {
     setSelectedSeason,
     addToFavorites,
     removeFromFavorites,
-    t
+    t,
+    formatRelativeTime,
+    formatDate,
+    formatTime
   };
 
   return <AppContext.Provider value={value}>{children}</AppContext.Provider>;

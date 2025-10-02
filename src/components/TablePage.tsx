@@ -2,9 +2,9 @@ import React from 'react';
 import { ArrowUpDown, ArrowUp, ArrowDown, Download } from 'lucide-react';
 import { Button } from './ui/button';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from './ui/table';
-import { Badge } from './ui/badge';
+
 import { useApp, teams, leagues } from './AppContext';
-import { toast } from 'sonner@2.0.3';
+import { toast } from 'sonner';
 
 type SortField = 'position' | 'team' | 'played' | 'won' | 'drawn' | 'lost' | 'goalsFor' | 'goalsAgainst' | 'goalDifference' | 'points';
 type SortDirection = 'asc' | 'desc';
@@ -39,8 +39,8 @@ export const TablePage: React.FC<TablePageProps> = ({ onViewTeamDetail }) => {
   };
 
   const sortedTeams = [...leagueTeams].sort((a, b) => {
-    let aValue = a[sortField];
-    let bValue = b[sortField];
+    let aValue: any = a[sortField as keyof typeof a];
+    let bValue: any = b[sortField as keyof typeof b];
 
     if (sortField === 'team') {
       aValue = a.name;
@@ -69,7 +69,40 @@ export const TablePage: React.FC<TablePageProps> = ({ onViewTeamDetail }) => {
   };
 
   const handleExportCSV = () => {
-    // Simulación de exportación CSV
+    if (!leagueTeams.length) {
+      toast.error('No hay datos para exportar');
+      return;
+    }
+    // Encabezados
+    const headers = ['Pos', 'Equipo', 'PJ', 'G', 'E', 'P', 'GF', 'GC', 'DG', 'Pts', 'Forma'];
+    // Filas
+    const rows = leagueTeams.map(team => [
+      team.position,
+      team.name,
+      team.played,
+      team.won,
+      team.drawn,
+      team.lost,
+      team.goalsFor,
+      team.goalsAgainst,
+      team.goalDifference,
+      team.points,
+      team.form ? team.form.join('') : ''
+    ]);
+    // Construir CSV
+    const csvContent = [headers, ...rows]
+      .map(row => row.map(val => `"${val ?? ''}"`).join(','))
+      .join('\n');
+    // Descargar
+    const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement('a');
+    link.href = url;
+    link.setAttribute('download', `${currentLeague?.name || 'tabla'}.csv`);
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    URL.revokeObjectURL(url);
     toast.success('CSV exportado correctamente');
   };
 

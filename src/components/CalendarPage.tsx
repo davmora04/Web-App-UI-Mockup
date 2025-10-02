@@ -1,7 +1,7 @@
 import React from 'react';
 import { Calendar as CalendarIcon, Clock, MapPin } from 'lucide-react';
 import { Button } from './ui/button';
-import { Card, CardContent, CardHeader, CardTitle } from './ui/card';
+import { Card, CardContent } from './ui/card';
 import { Badge } from './ui/badge';
 import { useApp, matches, leagues } from './AppContext';
 
@@ -71,11 +71,11 @@ export const CalendarPage: React.FC<CalendarPageProps> = ({ onViewMatchDetail })
     }
   };
 
-  const getVenueBadge = (isHome: boolean, teamName: string) => {
+  const getVenueBadge = (isHome: boolean) => {
     return (
       <Badge variant="outline" className="text-xs">
         <MapPin className="h-3 w-3 mr-1" />
-        {isHome ? t('home') : t('away')}
+        {isHome ? t('homeTeam') : t('awayTeam')}
       </Badge>
     );
   };
@@ -135,7 +135,7 @@ export const CalendarPage: React.FC<CalendarPageProps> = ({ onViewMatchDetail })
                                 <span className="text-xl">{match.homeTeam.logo}</span>
                                 <div>
                                   <p className="font-medium">{match.homeTeam.name}</p>
-                                  {getVenueBadge(true, match.homeTeam.name)}
+                                  {getVenueBadge(true)}
                                 </div>
                               </div>
 
@@ -165,7 +165,7 @@ export const CalendarPage: React.FC<CalendarPageProps> = ({ onViewMatchDetail })
                               <div className="flex items-center space-x-2 min-w-[150px] justify-end">
                                 <div className="text-right">
                                   <p className="font-medium">{match.awayTeam.name}</p>
-                                  {getVenueBadge(false, match.awayTeam.name)}
+                                  {getVenueBadge(false)}
                                 </div>
                                 <span className="text-xl">{match.awayTeam.logo}</span>
                               </div>

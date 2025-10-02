@@ -6,7 +6,7 @@ import { Label } from './ui/label';
 import { Card, CardContent, CardHeader, CardTitle } from './ui/card';
 import { Alert, AlertDescription } from './ui/alert';
 import { useApp } from './AppContext';
-import { toast } from 'sonner@2.0.3';
+import { toast } from 'sonner';
 
 export const AuthPage: React.FC = () => {
   const { t } = useApp();

@@ -2,6 +2,10 @@ import React from 'react';
 import { Sidebar } from './Sidebar';
 import { MatchCard } from './MatchCard';
 import { useApp, matches, leagues } from './AppContext';
+import { Button } from './ui/button';
+import { Card, CardContent, CardHeader, CardTitle } from './ui/card';
+import { Bell, MessageCircle, Zap, AlertTriangle } from 'lucide-react';
+import { toast } from 'sonner';
 
 interface HomePageProps {
   onViewMatchDetail?: (matchId: string) => void;
@@ -56,6 +60,61 @@ export const HomePage: React.FC<HomePageProps> = ({ onViewMatchDetail, onViewTea
                 <p>No hay partidos disponibles para esta liga.</p>
               </div>
             )}
+          </section>
+
+          {/* Prueba de Notificaciones */}
+          <section>
+            <h2 className="text-2xl font-bold mb-4">Prueba las Notificaciones</h2>
+            <Card>
+              <CardHeader>
+                <CardTitle className="flex items-center space-x-2">
+                  <Bell className="h-5 w-5" />
+                  <span>Sistema de Notificaciones</span>
+                </CardTitle>
+              </CardHeader>
+              <CardContent>
+                <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+                  <Button
+                    variant="outline"
+                    onClick={() => toast.success('¡Gol de tu equipo favorito! ⚽')}
+                    className="flex flex-col items-center space-y-2 h-20"
+                  >
+                    <Zap className="h-5 w-5 text-green-600" />
+                    <span className="text-sm">Gol</span>
+                  </Button>
+                  
+                  <Button
+                    variant="outline"
+                    onClick={() => toast.info('Nuevo artículo publicado en la sección de noticias')}
+                    className="flex flex-col items-center space-y-2 h-20"
+                  >
+                    <MessageCircle className="h-5 w-5 text-blue-600" />
+                    <span className="text-sm">Noticia</span>
+                  </Button>
+                  
+                  <Button
+                    variant="outline"
+                    onClick={() => toast.warning('Tu equipo juega en 15 minutos')}
+                    className="flex flex-col items-center space-y-2 h-20"
+                  >
+                    <AlertTriangle className="h-5 w-5 text-orange-600" />
+                    <span className="text-sm">Recordatorio</span>
+                  </Button>
+                  
+                  <Button
+                    variant="outline"
+                    onClick={() => toast('¡Bienvenido a la aplicación! 🎉', {
+                      description: 'Explora todas las funcionalidades disponibles',
+                      duration: 4000
+                    })}
+                    className="flex flex-col items-center space-y-2 h-20"
+                  >
+                    <Bell className="h-5 w-5 text-purple-600" />
+                    <span className="text-sm">Personalizada</span>
+                  </Button>
+                </div>
+              </CardContent>
+            </Card>
           </section>
 
           {/* Acceso Rápido a Favoritos */}

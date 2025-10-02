@@ -1,5 +1,5 @@
 import React from 'react';
-import { Settings, Accessibility, Palette, Bell, User, Moon, Sun, Type, Volume2 } from 'lucide-react';
+import { Settings, Accessibility, Palette, Bell, Moon, Sun, Type, Volume2 } from 'lucide-react';
 import { Button } from './ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from './ui/card';
 import { Switch } from './ui/switch';
@@ -8,7 +8,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '.
 import { Label } from './ui/label';
 import { Separator } from './ui/separator';
 import { useApp } from './AppContext';
-import { toast } from 'sonner@2.0.3';
+import { toast } from 'sonner';
 
 export const SettingsPage: React.FC = () => {
   const { theme, setTheme, language, setLanguage, t } = useApp();
@@ -109,7 +109,7 @@ export const SettingsPage: React.FC = () => {
               </Label>
               <Slider
                 value={[textSize]}
-                onValueChange={(value) => setTextSize(value[0])}
+                onValueChange={(value: number[]) => setTextSize(value[0])}
                 min={12}
                 max={20}
                 step={1}
@@ -132,7 +132,9 @@ export const SettingsPage: React.FC = () => {
               </div>
               <Switch
                 checked={highContrast}
-                onCheckedChange={setHighContrast}
+                onCheckedChange={(checked: boolean) =>
+                  setHighContrast(checked)
+                }
               />
             </div>
 
@@ -246,7 +248,7 @@ export const SettingsPage: React.FC = () => {
                 </div>
                 <Switch
                   checked={notifications.matchAlerts}
-                  onCheckedChange={(checked) => 
+                  onCheckedChange={(checked: boolean) => 
                     setNotifications(prev => ({ ...prev, matchAlerts: checked }))
                   }
                 />
@@ -261,7 +263,7 @@ export const SettingsPage: React.FC = () => {
                 </div>
                 <Switch
                   checked={notifications.favoriteTeams}
-                  onCheckedChange={(checked) => 
+                  onCheckedChange={(checked: boolean) => 
                     setNotifications(prev => ({ ...prev, favoriteTeams: checked }))
                   }
                 />
@@ -276,7 +278,7 @@ export const SettingsPage: React.FC = () => {
                 </div>
                 <Switch
                   checked={notifications.newsUpdates}
-                  onCheckedChange={(checked) => 
+                  onCheckedChange={(checked: boolean) => 
                     setNotifications(prev => ({ ...prev, newsUpdates: checked }))
                   }
                 />
@@ -296,6 +298,92 @@ export const SettingsPage: React.FC = () => {
                   }
                 />
               </div>
+            </div>
+          </CardContent>
+        </Card>
+
+        {/* Prueba de Notificaciones */}
+        <Card>
+          <CardHeader>
+            <CardTitle>Probar Notificaciones</CardTitle>
+            <p className="text-sm text-muted-foreground">
+              Prueba los diferentes tipos de notificaciones para ver cómo se ven
+            </p>
+          </CardHeader>
+          <CardContent className="space-y-4">
+            <div className="grid grid-cols-2 gap-4">
+              <Button
+                variant="outline"
+                onClick={() => toast.success('¡Partido ganado! Real Madrid 2-1 Barcelona')}
+                className="h-auto p-4 text-left flex flex-col items-start space-y-1"
+              >
+                <span className="font-medium text-green-600">Éxito</span>
+                <span className="text-sm text-muted-foreground">Resultado de partido</span>
+              </Button>
+              
+              <Button
+                variant="outline"
+                onClick={() => toast.info('Nuevo artículo: "Fichajes de invierno 2024"')}
+                className="h-auto p-4 text-left flex flex-col items-start space-y-1"
+              >
+                <span className="font-medium text-blue-600">Información</span>
+                <span className="text-sm text-muted-foreground">Noticia nueva</span>
+              </Button>
+              
+              <Button
+                variant="outline"
+                onClick={() => toast.warning('Tu equipo favorito juega en 30 minutos')}
+                className="h-auto p-4 text-left flex flex-col items-start space-y-1"
+              >
+                <span className="font-medium text-orange-600">Aviso</span>
+                <span className="text-sm text-muted-foreground">Recordatorio</span>
+              </Button>
+              
+              <Button
+                variant="outline"
+                onClick={() => toast.error('Error al cargar los datos del partido')}
+                className="h-auto p-4 text-left flex flex-col items-start space-y-1"
+              >
+                <span className="font-medium text-red-600">Error</span>
+                <span className="text-sm text-muted-foreground">Fallo en la conexión</span>
+              </Button>
+            </div>
+            
+            <Separator />
+            
+            <div className="space-y-2">
+              <Button
+                variant="default"
+                onClick={() => toast('Notificación personalizada con acciones', {
+                  description: 'Esta notificación incluye botones de acción',
+                  action: {
+                    label: 'Ver más',
+                    onClick: () => toast.success('¡Acción ejecutada!')
+                  },
+                  cancel: {
+                    label: 'Cerrar',
+                    onClick: () => {}
+                  }
+                })}
+                className="w-full"
+              >
+                Notificación con Acciones
+              </Button>
+              
+              <Button
+                variant="secondary"
+                onClick={() => toast.promise(
+                  new Promise((resolve) => setTimeout(resolve, 2000)),
+                  {
+                    loading: 'Cargando datos del partido...',
+                    success: 'Datos cargados correctamente',
+                    error: 'Error al cargar los datos'
+                  }
+                )}
+                className="w-full"
+              >
+                Notificación de Carga
+              </Button>
             </div>
           </CardContent>
         </Card>

@@ -1,10 +1,10 @@
 import React from 'react';
-import { ArrowLeft, Trophy, Calendar, BarChart3, Star } from 'lucide-react';
+import { ArrowLeft, Trophy, BarChart3, Star } from 'lucide-react';
 import { Button } from './ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from './ui/card';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from './ui/tabs';
 import { Badge } from './ui/badge';
-import { useApp, teams, matches, Team } from './AppContext';
+import { useApp, teams, matches } from './AppContext';
 import { MatchCard } from './MatchCard';
 
 interface TeamDetailProps {
@@ -15,7 +15,7 @@ interface TeamDetailProps {
 }
 
 export const TeamDetail: React.FC<TeamDetailProps> = ({ teamId, onBack, onViewMatch }) => {
-  const { favorites, addToFavorites, removeFromFavorites, t } = useApp();
+  const { favorites, addToFavorites, removeFromFavorites } = useApp();
   
   const team = teams.find(t => t.id === teamId);
   const teamMatches = matches.filter(m => 
