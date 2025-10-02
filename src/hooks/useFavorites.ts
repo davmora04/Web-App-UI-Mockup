@@ -1,7 +1,7 @@
 import { useReducer, useCallback } from 'react';
 import { Team } from '../components/AppContext';
 
-// Action types for favorites management
+// Tipos de acciones para el manejo de favoritos
 export type FavoritesAction =
   | { type: 'ADD_FAVORITE'; payload: Team }
   | { type: 'REMOVE_FAVORITE'; payload: string }
@@ -9,21 +9,21 @@ export type FavoritesAction =
   | { type: 'CLEAR_FAVORITES' }
   | { type: 'LOAD_FAVORITES'; payload: Team[] };
 
-// Favorites state
+// Estado de favoritos
 export interface FavoritesState {
   favorites: Team[];
   isLoading: boolean;
   error: string | null;
 }
 
-// Initial state
+// Estado inicial
 const initialState: FavoritesState = {
   favorites: [],
   isLoading: false,
   error: null
 };
 
-// Reducer function
+// Reducer para manejar favoritos
 function favoritesReducer(state: FavoritesState, action: FavoritesAction): FavoritesState {
   switch (action.type) {
     case 'ADD_FAVORITE':

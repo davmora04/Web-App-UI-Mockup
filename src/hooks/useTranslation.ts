@@ -1,17 +1,9 @@
 import { useCallback } from 'react';
 import { translations, Language, TranslationKey } from '../locales';
 
-/**
- * Custom hook for internationalization
- * Provides translation function and language utilities
- */
+// Hook personalizado para internacionalización (i18n)
 export function useTranslation(language: Language) {
-  /**
-   * Translation function
-   * @param key - Translation key
-   * @param params - Optional parameters for string interpolation
-   * @returns Translated string
-   */
+  // Función de traducción con interpolación de parámetros
   const t = useCallback((key: TranslationKey, params?: Record<string, string | number>): string => {
     let translation: string = translations[language][key] || key;
     
@@ -25,11 +17,7 @@ export function useTranslation(language: Language) {
     return translation;
   }, [language]);
 
-  /**
-   * Format relative time in the current language
-   * @param date - Date to format
-   * @returns Formatted relative time string
-   */
+  // Formatear tiempo relativo (hace X minutos/horas/días)
   const formatRelativeTime = useCallback((date: Date | string): string => {
     const targetDate = typeof date === 'string' ? new Date(date) : date;
     const now = new Date();
@@ -52,12 +40,7 @@ export function useTranslation(language: Language) {
     }
   }, [language, t]);
 
-  /**
-   * Format date in the current language
-   * @param date - Date to format
-   * @param options - Intl.DateTimeFormat options
-   * @returns Formatted date string
-   */
+  // Formatear fecha según el idioma
   const formatDate = useCallback((
     date: Date | string,
     options?: Intl.DateTimeFormatOptions
@@ -75,12 +58,7 @@ export function useTranslation(language: Language) {
     return targetDate.toLocaleDateString(locale, defaultOptions);
   }, [language]);
 
-  /**
-   * Format time in the current language
-   * @param date - Date to format
-   * @param options - Intl.DateTimeFormat options
-   * @returns Formatted time string
-   */
+  // Formatear hora según el idioma
   const formatTime = useCallback((
     date: Date | string,
     options?: Intl.DateTimeFormatOptions
@@ -97,12 +75,7 @@ export function useTranslation(language: Language) {
     return targetDate.toLocaleTimeString(locale, defaultOptions);
   }, [language]);
 
-  /**
-   * Format numbers in the current language
-   * @param number - Number to format
-   * @param options - Intl.NumberFormat options
-   * @returns Formatted number string
-   */
+  // Formatear números según el idioma
   const formatNumber = useCallback((
     number: number,
     options?: Intl.NumberFormatOptions
@@ -111,19 +84,12 @@ export function useTranslation(language: Language) {
     return number.toLocaleString(locale, options);
   }, [language]);
 
-  /**
-   * Get available languages
-   * @returns Array of available language codes
-   */
+  // Obtener idiomas disponibles
   const getAvailableLanguages = useCallback((): Language[] => {
     return Object.keys(translations) as Language[];
   }, []);
 
-  /**
-   * Check if a translation key exists
-   * @param key - Translation key to check
-   * @returns Boolean indicating if key exists
-   */
+  // Verificar si existe una traducción para una clave
   const hasTranslation = useCallback((key: string): boolean => {
     return key in translations[language];
   }, [language]);

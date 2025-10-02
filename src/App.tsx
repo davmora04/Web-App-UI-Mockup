@@ -1,3 +1,8 @@
+/**
+ * StatFut - Aplicación de Estadísticas de Fútbol
+ * Componente principal que gestiona la navegación y estado de la aplicación
+ */
+
 import React from 'react';
 import { AppProvider, useApp } from './components/AppContext';
 import { Navbar } from './components/Navbar';
@@ -15,6 +20,7 @@ import { SearchResults } from './components/SearchResults';
 import { OnboardingTour } from './components/OnboardingTour';
 import { Toaster } from './components/ui/sonner';
 
+// Interfaces para el estado de la aplicación
 interface SearchResults {
   teams: any[];
   leagues: any[];
@@ -39,13 +45,12 @@ const AppContent: React.FC = () => {
   // Verificar si es la primera vez del usuario
   React.useEffect(() => {
     const tourCompleted = localStorage.getItem('statfut-tour-completed');
-    console.log('Tour completed:', tourCompleted); // Debug
     
-    // Siempre mostrar el tour para testing - puedes comentar esta línea en producción
+    // Siempre mostrar el tour para testing
     localStorage.removeItem('statfut-tour-completed');
     
     if (!tourCompleted) {
-      setTimeout(() => setShowTour(true), 500); // Delay más corto para mejor UX
+      setTimeout(() => setShowTour(true), 500);
     }
   }, []);
 

@@ -1,7 +1,11 @@
 import React, { createContext, useContext, useState, useEffect, ReactNode } from 'react';
 import { useLocalStorage, useFavorites } from '../hooks';
 
-// Tipos de datos
+// ============================================
+// INTERFACES Y TIPOS DE DATOS
+// ============================================
+
+// Interfaz para equipos de fútbol
 export interface Team {
   id: string;
   name: string;
@@ -18,6 +22,7 @@ export interface Team {
   form?: ('W' | 'D' | 'L')[];
 }
 
+// Interfaz para partidos
 export interface Match {
   id: string;
   homeTeam: Team;
@@ -29,6 +34,7 @@ export interface Match {
   minute?: number;
 }
 
+// Interfaz para noticias
 export interface News {
   id: string;
   title: string;
@@ -40,6 +46,7 @@ export interface News {
   category: string;
 }
 
+// Interfaz para ligas de fútbol
 export interface League {
   id: string;
   name: string;
@@ -48,13 +55,18 @@ export interface League {
   season: string;
 }
 
-// Datos mock
+// ============================================
+// DATOS DE EJEMPLO (Mock Data)
+// ============================================
+
+// Ligas disponibles
 export const leagues: League[] = [
   { id: 'laliga', name: 'La Liga', country: 'España', logo: '🇪🇸', season: '2024/25' },
   { id: 'premier', name: 'Premier League', country: 'Inglaterra', logo: '🏴󠁧󠁢󠁥󠁮󠁧󠁿', season: '2024/25' },
   { id: 'seriea', name: 'Serie A', country: 'Italia', logo: '🇮🇹', season: '2024/25' }
 ];
 
+// Equipos de las diferentes ligas
 export const teams: Team[] = [
   // La Liga
   { id: 'real-madrid', name: 'Real Madrid', logo: '⚪', position: 1, points: 45, played: 18, won: 14, drawn: 3, lost: 1, goalsFor: 42, goalsAgainst: 15, goalDifference: 27, form: ['W', 'W', 'D', 'W', 'W'] },
@@ -72,6 +84,7 @@ export const teams: Team[] = [
   { id: 'inter', name: 'Inter Milan', logo: '🔵', position: 3, points: 42, played: 19, won: 13, drawn: 3, lost: 3, goalsFor: 43, goalsAgainst: 18, goalDifference: 25, form: ['W', 'W', 'W', 'L', 'W'] }
 ];
 
+// Partidos programados y finalizados
 export const matches: Match[] = [
   {
     id: 'match1',
@@ -209,7 +222,7 @@ export const AppProvider: React.FC<AppProviderProps> = ({ children }) => {
     loadFavorites
   } = useFavorites();
 
-  // Load favorites from localStorage on mount
+  // Cargar favoritos desde localStorage
   useEffect(() => {
     const savedFavorites = localStorage.getItem('statfut-favorites');
     if (savedFavorites) {
@@ -217,7 +230,7 @@ export const AppProvider: React.FC<AppProviderProps> = ({ children }) => {
         const parsedFavorites = JSON.parse(savedFavorites);
         loadFavorites(parsedFavorites);
       } catch (error) {
-        console.warn('Error loading favorites from localStorage:', error);
+        // Error al cargar favoritos
       }
     }
   }, [loadFavorites]);

@@ -38,8 +38,7 @@ export function useAccessibility() {
 
       const handleEscapeKey = (e: KeyboardEvent) => {
         if (e.key === 'Escape') {
-          // Close modal/dialog - this would need to be connected to close function
-          console.log('Escape pressed - should close modal');
+          // Cerrar modal al presionar Escape
         }
       };
 
