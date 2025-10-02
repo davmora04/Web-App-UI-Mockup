@@ -298,7 +298,102 @@ export const SettingsPage: React.FC = () => {
                   }
                 />
               </div>
+
+              <Separator />
+
+              {/* Configuración de Horario Silencioso */}
+              <div className="space-y-4">
+                <div className="flex items-center justify-between">
+                  <div className="space-y-0.5">
+                    <Label>Horario silencioso</Label>
+                    <p className="text-sm text-muted-foreground">
+                      Silenciar notificaciones durante ciertas horas
+                    </p>
+                  </div>
+                  <Switch
+                    checked={quietHours.enabled}
+                    onCheckedChange={(checked) => 
+                      setQuietHours(prev => ({ ...prev, enabled: checked }))
+                    }
+                  />
+                </div>
+
+                {quietHours.enabled && (
+                  <div className="grid grid-cols-2 gap-4 pl-4 border-l-2 border-muted">
+                    <div className="space-y-2">
+                      <Label htmlFor="quiet-start">Inicio</Label>
+                      <input
+                        id="quiet-start"
+                        type="time"
+                        value={quietHours.start}
+                        onChange={(e) => 
+                          setQuietHours(prev => ({ ...prev, start: e.target.value }))
+                        }
+                        className="w-full px-3 py-2 border border-input bg-background rounded-md text-sm"
+                      />
+                    </div>
+                    <div className="space-y-2">
+                      <Label htmlFor="quiet-end">Fin</Label>
+                      <input
+                        id="quiet-end"
+                        type="time"
+                        value={quietHours.end}
+                        onChange={(e) => 
+                          setQuietHours(prev => ({ ...prev, end: e.target.value }))
+                        }
+                        className="w-full px-3 py-2 border border-input bg-background rounded-md text-sm"
+                      />
+                    </div>
+                  </div>
+                )}
+              </div>
             </div>
+          </CardContent>
+        </Card>
+
+        {/* Configuración de Email */}
+        <Card>
+          <CardHeader>
+            <CardTitle className="flex items-center space-x-2">
+              <Bell className="h-5 w-5" />
+              <span>Notificaciones por Email</span>
+            </CardTitle>
+            <p className="text-sm text-muted-foreground">
+              Configura las notificaciones que quieres recibir por email
+            </p>
+          </CardHeader>
+          <CardContent className="space-y-4">
+            <div className="space-y-2">
+              <Label htmlFor="email">Dirección de email</Label>
+              <input
+                id="email"
+                type="email"
+                placeholder="tu@email.com"
+                className="w-full px-3 py-2 border border-input bg-background rounded-md text-sm"
+              />
+              <p className="text-xs text-muted-foreground">
+                Solo se usará para enviar notificaciones de la app
+              </p>
+            </div>
+
+            <div className="space-y-2">
+              <Label>Frecuencia de emails</Label>
+              <Select defaultValue="weekly">
+                <SelectTrigger>
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="instant">Inmediata</SelectItem>
+                  <SelectItem value="daily">Diaria</SelectItem>
+                  <SelectItem value="weekly">Semanal</SelectItem>
+                  <SelectItem value="never">Nunca</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+
+            <Button variant="outline" className="w-full">
+              Probar Email de Notificación
+            </Button>
           </CardContent>
         </Card>
 

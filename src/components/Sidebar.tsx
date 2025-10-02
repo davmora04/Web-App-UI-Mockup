@@ -12,7 +12,7 @@ export const Sidebar: React.FC = () => {
   const seasons = ['2024/25', '2023/24', '2022/23', '2021/22'];
 
   return (
-    <div className="w-64 bg-sidebar border-r border-sidebar-border h-full" role="complementary" aria-label="Filters sidebar">
+    <div className="w-64 bg-sidebar border-r border-sidebar-border h-full" role="complementary" aria-label="Filters sidebar" data-tour="sidebar">
       <Card className="m-4 border-sidebar-border">
         <CardHeader className="pb-2">
           <CardTitle className="flex items-center text-sidebar-foreground">

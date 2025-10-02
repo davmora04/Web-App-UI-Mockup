@@ -4,8 +4,9 @@ import { MatchCard } from './MatchCard';
 import { useApp, matches, leagues } from './AppContext';
 import { Button } from './ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from './ui/card';
-import { Bell, MessageCircle, Zap, AlertTriangle } from 'lucide-react';
+import { Bell, MessageCircle, Zap, AlertTriangle, Settings } from 'lucide-react';
 import { toast } from 'sonner';
+import { DragDropFavorites } from './DragDropFavorites';
 
 interface HomePageProps {
   onViewMatchDetail?: (matchId: string) => void;
@@ -14,6 +15,7 @@ interface HomePageProps {
 
 export const HomePage: React.FC<HomePageProps> = ({ onViewMatchDetail, onViewTeamDetail }) => {
   const { selectedLeague, favorites, t } = useApp();
+  const [showDragDrop, setShowDragDrop] = React.useState(false);
 
   // Filtrar partidos por liga seleccionada
   const filteredMatches = matches
@@ -118,8 +120,20 @@ export const HomePage: React.FC<HomePageProps> = ({ onViewMatchDetail, onViewTea
           </section>
 
           {/* Acceso Rápido a Favoritos */}
-          <section className="mt-8">
-            <h3 className="text-xl font-bold mb-4">{t('favorites')}</h3>
+          <section className="mt-8" data-tour="favorites">
+            <div className="flex items-center justify-between mb-4">
+              <h3 className="text-xl font-bold">{t('favorites')}</h3>
+              {favorites.length > 1 && (
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={() => setShowDragDrop(true)}
+                >
+                  <Settings className="h-4 w-4 mr-2" />
+                  Reordenar
+                </Button>
+              )}
+            </div>
             {favorites.length > 0 ? (
               <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
                 {favorites.slice(0, 6).map((team) => (
@@ -148,6 +162,12 @@ export const HomePage: React.FC<HomePageProps> = ({ onViewMatchDetail, onViewTea
               </div>
             )}
           </section>
+
+          {/* Modal de Drag & Drop */}
+          <DragDropFavorites
+            isOpen={showDragDrop}
+            onClose={() => setShowDragDrop(false)}
+          />
         </div>
       </main>
     </div>

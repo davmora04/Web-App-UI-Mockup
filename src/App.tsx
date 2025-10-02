@@ -12,6 +12,7 @@ import { MatchDetail } from './components/MatchDetail';
 import { HeadToHead } from './components/HeadToHead';
 import { ProfilePage } from './components/ProfilePage';
 import { SearchResults } from './components/SearchResults';
+import { OnboardingTour } from './components/OnboardingTour';
 import { Toaster } from './components/ui/sonner';
 
 interface SearchResults {
@@ -33,6 +34,20 @@ interface AppState {
 const AppContent: React.FC = () => {
   const { currentPage, setCurrentPage } = useApp();
   const [appState, setAppState] = React.useState<AppState>({});
+  const [showTour, setShowTour] = React.useState(false);
+
+  // Verificar si es la primera vez del usuario
+  React.useEffect(() => {
+    const tourCompleted = localStorage.getItem('statfut-tour-completed');
+    console.log('Tour completed:', tourCompleted); // Debug
+    
+    // Siempre mostrar el tour para testing - puedes comentar esta línea en producción
+    localStorage.removeItem('statfut-tour-completed');
+    
+    if (!tourCompleted) {
+      setTimeout(() => setShowTour(true), 500); // Delay más corto para mejor UX
+    }
+  }, []);
 
   const handleViewMatchDetail = (matchId: string) => {
     setAppState(prev => ({ ...prev, selectedMatchId: matchId }));
@@ -98,11 +113,7 @@ const AppContent: React.FC = () => {
         return <SettingsPage />;
 
       case 'profile':
-        return (
-          <ProfilePage 
-            onViewTeamDetail={handleViewTeamDetail}
-          />
-        );
+        return <ProfilePage />;
 
       case 'team-detail':
         return appState.selectedTeamId ? (
@@ -214,6 +225,10 @@ const AppContent: React.FC = () => {
       <main className="flex-1">
         {renderCurrentPage()}
       </main>
+      <OnboardingTour
+        isOpen={showTour}
+        onClose={() => setShowTour(false)}
+      />
       <Toaster position="bottom-right" />
     </div>
   );

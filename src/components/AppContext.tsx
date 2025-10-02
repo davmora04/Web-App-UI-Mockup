@@ -171,6 +171,7 @@ interface AppContextType {
   setSelectedSeason: (season: string) => void;
   addToFavorites: (team: Team) => void;
   removeFromFavorites: (teamId: string) => void;
+  reorderFavorites: (teams: Team[]) => void;
   t: (key: TranslationKey, params?: Record<string, string | number>) => string;
   formatRelativeTime: (date: Date | string) => string;
   formatDate: (date: Date | string, options?: Intl.DateTimeFormatOptions) => string;
@@ -204,6 +205,7 @@ export const AppProvider: React.FC<AppProviderProps> = ({ children }) => {
     favorites,
     addToFavorites: addFavorite,
     removeFromFavorites: removeFavorite,
+    reorderFavorites,
     loadFavorites
   } = useFavorites();
 
@@ -255,6 +257,7 @@ export const AppProvider: React.FC<AppProviderProps> = ({ children }) => {
     setSelectedSeason,
     addToFavorites,
     removeFromFavorites,
+    reorderFavorites,
     t,
     formatRelativeTime,
     formatDate,

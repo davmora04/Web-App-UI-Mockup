@@ -1,11 +1,11 @@
 import React from 'react';
-import { Eye, EyeOff, Mail, Lock, User, ArrowRight } from 'lucide-react';
+import { Eye, EyeOff, Mail, Lock, User, ArrowRight, Star } from 'lucide-react';
 import { Button } from './ui/button';
 import { Input } from './ui/input';
 import { Label } from './ui/label';
 import { Card, CardContent, CardHeader, CardTitle } from './ui/card';
 import { Alert, AlertDescription } from './ui/alert';
-import { useApp } from './AppContext';
+import { useApp, teams } from './AppContext';
 import { toast } from 'sonner';
 
 export const AuthPage: React.FC = () => {
@@ -18,7 +18,8 @@ export const AuthPage: React.FC = () => {
     name: '',
     email: '',
     password: '',
-    confirmPassword: ''
+    confirmPassword: '',
+    favoriteTeam: ''
   });
   
   const [errors, setErrors] = React.useState<Record<string, string>>({});
@@ -92,7 +93,8 @@ export const AuthPage: React.FC = () => {
         name: '',
         email: '',
         password: '',
-        confirmPassword: ''
+        confirmPassword: '',
+        favoriteTeam: ''
       });
       
     } catch (error) {
@@ -118,7 +120,8 @@ export const AuthPage: React.FC = () => {
       name: '',
       email: '',
       password: '',
-      confirmPassword: ''
+      confirmPassword: '',
+      favoriteTeam: ''
     });
   };
 
@@ -254,6 +257,32 @@ export const AuthPage: React.FC = () => {
                     <AlertDescription>{errors.confirmPassword}</AlertDescription>
                   </Alert>
                 )}
+              </div>
+            )}
+
+            {/* Selección de equipo favorito (solo para registro) */}
+            {mode === 'signup' && (
+              <div className="space-y-2">
+                <Label htmlFor="favoriteTeam">Equipo Favorito (Opcional)</Label>
+                <div className="relative">
+                  <Star className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
+                  <select
+                    id="favoriteTeam"
+                    value={formData.favoriteTeam}
+                    onChange={(e) => handleInputChange('favoriteTeam', e.target.value)}
+                    className="w-full pl-10 pr-4 py-2 border border-input bg-background rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-ring focus:border-transparent"
+                  >
+                    <option value="">Selecciona tu equipo favorito</option>
+                    {teams.map((team) => (
+                      <option key={team.id} value={team.id}>
+                        {team.logo} {team.name}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+                <p className="text-xs text-muted-foreground">
+                  Te mostraremos contenido personalizado de tu equipo favorito
+                </p>
               </div>
             )}
 
