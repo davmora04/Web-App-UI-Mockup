@@ -56,7 +56,7 @@ describe('Sidebar Component', () => {
     const premierLeagueButton = screen.getByText('Premier League');
     await user.click(premierLeagueButton);
     
-    // Should update current selection
+   
     expect(screen.getByText(/Premier League - 2024\/25/i)).toBeInTheDocument();
   });
 
@@ -68,7 +68,7 @@ describe('Sidebar Component', () => {
     const season2023Button = screen.getByText('2023/24');
     await user.click(season2023Button);
     
-    // Should update current selection
+    
     expect(screen.getByText(/La Liga - 2023\/24/i)).toBeInTheDocument();
   });
 
@@ -77,14 +77,13 @@ describe('Sidebar Component', () => {
     
     render(<SidebarWithProvider />);
     
-    // Get the collapsible trigger button specifically (has aria-expanded)
+    
     const leagueToggle = screen.getByRole('button', { name: /liga/i, expanded: true });
     
-    // Click to toggle
+    
     await user.click(leagueToggle);
 
-    // After clicking, the collapsible should expand and show leagues
-    // Note: 'La Liga' appears in the current selection at the bottom
+    
     expect(screen.getByText(/la liga/i)).toBeInTheDocument();
   });
 
@@ -95,10 +94,10 @@ describe('Sidebar Component', () => {
     
     const laLigaButton = screen.getByText('La Liga');
     
-    // Test hover behavior
+    
     await user.hover(laLigaButton);
     
-    // The button should exist and be hoverable
+    
     expect(laLigaButton).toBeInTheDocument();
   });
 });
