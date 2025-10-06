@@ -1,10 +1,10 @@
 import React from 'react';
-import { ArrowLeft, Trophy, Calendar, BarChart3, Star } from 'lucide-react';
+import { ArrowLeft, Trophy, BarChart3, Star } from 'lucide-react';
 import { Button } from './ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from './ui/card';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from './ui/tabs';
 import { Badge } from './ui/badge';
-import { useApp, teams, matches, Team } from './AppContext';
+import { useApp, teams, matches } from './AppContext';
 import { MatchCard } from './MatchCard';
 
 interface TeamDetailProps {
@@ -16,20 +16,20 @@ interface TeamDetailProps {
 
 export const TeamDetail: React.FC<TeamDetailProps> = ({ teamId, onBack, onViewMatch }) => {
   const { favorites, addToFavorites, removeFromFavorites, t } = useApp();
-  
+
   const team = teams.find(t => t.id === teamId);
-  const teamMatches = matches.filter(m => 
+  const teamMatches = matches.filter(m =>
     m.homeTeam.id === teamId || m.awayTeam.id === teamId
   );
-  
+
   const isFavorite = favorites.some(fav => fav.id === teamId);
 
   if (!team) {
     return (
       <div className="p-6 text-center">
-        <p>Equipo no encontrado</p>
+        <p>{t('teamNotFound')}</p>
         <Button onClick={onBack} className="mt-4">
-          Volver
+          {t('back')}
         </Button>
       </div>
     );
@@ -45,16 +45,16 @@ export const TeamDetail: React.FC<TeamDetailProps> = ({ teamId, onBack, onViewMa
 
   const getFormBadges = (form?: ('W' | 'D' | 'L')[]) => {
     if (!form) return null;
-    
+
     return (
       <div className="flex space-x-1">
         {form.map((result, index) => {
           const colors = {
             W: 'bg-green-500 text-white',
             D: 'bg-yellow-500 text-white',
-            L: 'bg-red-500 text-white'
+            L: 'bg-red-500 text-white',
           };
-          
+
           return (
             <div
               key={index}
@@ -74,15 +74,15 @@ export const TeamDetail: React.FC<TeamDetailProps> = ({ teamId, onBack, onViewMa
       <div className="flex items-center justify-between mb-6">
         <Button variant="ghost" onClick={onBack}>
           <ArrowLeft className="h-4 w-4 mr-2" />
-          Volver
+          {t('back')}
         </Button>
-        
-        <Button 
-          variant={isFavorite ? "default" : "outline"}
+
+        <Button
+          variant={isFavorite ? 'default' : 'outline'}
           onClick={toggleFavorite}
         >
           <Star className={`h-4 w-4 mr-2 ${isFavorite ? 'fill-current' : ''}`} />
-          {isFavorite ? 'En Favoritos' : 'Añadir a Favoritos'}
+          {isFavorite ? t('inFavorites') : t('addToFavorites')}
         </Button>
       </div>
 
@@ -94,9 +94,13 @@ export const TeamDetail: React.FC<TeamDetailProps> = ({ teamId, onBack, onViewMa
           <div className="flex items-center space-x-4 text-muted-foreground">
             <div className="flex items-center space-x-1">
               <Trophy className="h-4 w-4" />
-              <span>Posición: #{team.position}</span>
+              <span>
+                {t('position')}: #{team.position}
+              </span>
             </div>
-            <Badge variant="secondary">{team.points} puntos</Badge>
+            <Badge variant="secondary">
+              {team.points} {t('pointsShort')}
+            </Badge>
           </div>
         </div>
       </div>
@@ -104,81 +108,83 @@ export const TeamDetail: React.FC<TeamDetailProps> = ({ teamId, onBack, onViewMa
       {/* Tabs */}
       <Tabs defaultValue="summary" className="space-y-6">
         <TabsList className="grid w-full grid-cols-3">
-          <TabsTrigger value="summary">Resumen</TabsTrigger>
-          <TabsTrigger value="matches">Partidos</TabsTrigger>
-          <TabsTrigger value="stats">Estadísticas</TabsTrigger>
+          <TabsTrigger value="summary">{t('team_summary')}</TabsTrigger>
+          <TabsTrigger value="matches">{t('team_matches')}</TabsTrigger>
+          <TabsTrigger value="stats">{t('team_stats')}</TabsTrigger>
         </TabsList>
 
-        {/* Resumen */}
+        {/* Summary */}
         <TabsContent value="summary" className="space-y-6">
           <div className="grid md:grid-cols-2 gap-6">
-            {/* Forma reciente */}
+            {/* Recent form */}
             <Card>
               <CardHeader>
-                <CardTitle>Forma Reciente (Últimos 5)</CardTitle>
+                <CardTitle>
+                  {t('recentForm')} ({t('last5')})
+                </CardTitle>
               </CardHeader>
               <CardContent>
                 <div className="flex items-center justify-center">
                   {getFormBadges(team.form)}
                 </div>
                 <p className="text-center text-sm text-muted-foreground mt-4">
-                  Últimos 5 partidos
+                  {t('last5')}
                 </p>
               </CardContent>
             </Card>
 
-            {/* Estadísticas básicas */}
+            {/* Basic stats */}
             <Card>
               <CardHeader>
-                <CardTitle>Esta Temporada</CardTitle>
+                <CardTitle>{t('thisSeason')}</CardTitle>
               </CardHeader>
               <CardContent className="space-y-4">
                 <div className="grid grid-cols-2 gap-4">
                   <div className="text-center">
                     <div className="text-2xl font-bold text-green-600">{team.won}</div>
-                    <div className="text-sm text-muted-foreground">Ganados</div>
+                    <div className="text-sm text-muted-foreground">{t('wins')}</div>
                   </div>
                   <div className="text-center">
                     <div className="text-2xl font-bold text-yellow-600">{team.drawn}</div>
-                    <div className="text-sm text-muted-foreground">Empatados</div>
+                    <div className="text-sm text-muted-foreground">{t('draws')}</div>
                   </div>
                   <div className="text-center">
                     <div className="text-2xl font-bold text-red-600">{team.lost}</div>
-                    <div className="text-sm text-muted-foreground">Perdidos</div>
+                    <div className="text-sm text-muted-foreground">{t('losses')}</div>
                   </div>
                   <div className="text-center">
                     <div className="text-2xl font-bold">{team.points}</div>
-                    <div className="text-sm text-muted-foreground">Puntos</div>
+                    <div className="text-sm text-muted-foreground">{t('pointsFull')}</div>
                   </div>
                 </div>
               </CardContent>
             </Card>
           </div>
 
-          {/* Próximo partido */}
+          {/* Next match */}
           <Card>
             <CardHeader>
-              <CardTitle>Próximo Partido</CardTitle>
+              <CardTitle>{t('nextMatch')}</CardTitle>
             </CardHeader>
             <CardContent>
               {teamMatches.filter(m => m.status === 'scheduled')[0] ? (
-                <MatchCard 
+                <MatchCard
                   match={teamMatches.filter(m => m.status === 'scheduled')[0]}
                   onViewDetail={onViewMatch}
                 />
               ) : (
                 <p className="text-muted-foreground text-center py-4">
-                  No hay próximos partidos programados
+                  {t('noUpcomingMatches')}
                 </p>
               )}
             </CardContent>
           </Card>
         </TabsContent>
 
-        {/* Partidos */}
+        {/* Matches */}
         <TabsContent value="matches" className="space-y-6">
           <div className="space-y-4">
-            <h3 className="text-xl font-bold">Todos los Partidos</h3>
+            <h3 className="text-xl font-bold">{t('allMatches')}</h3>
             {teamMatches.length > 0 ? (
               <div className="grid gap-4">
                 {teamMatches.map(match => (
@@ -191,30 +197,30 @@ export const TeamDetail: React.FC<TeamDetailProps> = ({ teamId, onBack, onViewMa
               </div>
             ) : (
               <p className="text-muted-foreground text-center py-8">
-                No hay partidos disponibles
+                {t('noMatchesAvailable')}
               </p>
             )}
           </div>
         </TabsContent>
 
-        {/* Estadísticas */}
+        {/* Statistics */}
         <TabsContent value="stats" className="space-y-6">
           <div className="grid md:grid-cols-2 gap-6">
-            {/* Estadísticas ofensivas */}
+            {/* Attack */}
             <Card>
               <CardHeader>
                 <CardTitle className="flex items-center space-x-2">
                   <BarChart3 className="h-5 w-5" />
-                  <span>Ataque</span>
+                  <span>{t('attack')}</span>
                 </CardTitle>
               </CardHeader>
               <CardContent className="space-y-4">
                 <div className="flex justify-between">
-                  <span>Goles a favor</span>
+                  <span>{t('goalsForLong')}</span>
                   <span className="font-bold">{team.goalsFor}</span>
                 </div>
                 <div className="flex justify-between">
-                  <span>Promedio por partido</span>
+                  <span>{t('avgPerGame')}</span>
                   <span className="font-bold">
                     {((team.goalsFor || 0) / (team.played || 1)).toFixed(1)}
                   </span>
@@ -222,26 +228,31 @@ export const TeamDetail: React.FC<TeamDetailProps> = ({ teamId, onBack, onViewMa
               </CardContent>
             </Card>
 
-            {/* Estadísticas defensivas */}
+            {/* Defense */}
             <Card>
               <CardHeader>
-                <CardTitle>Defensa</CardTitle>
+                <CardTitle>{t('defense')}</CardTitle>
               </CardHeader>
               <CardContent className="space-y-4">
                 <div className="flex justify-between">
-                  <span>Goles en contra</span>
+                  <span>{t('goalsAgainstLong')}</span>
                   <span className="font-bold">{team.goalsAgainst}</span>
                 </div>
                 <div className="flex justify-between">
-                  <span>Promedio por partido</span>
+                  <span>{t('avgPerGame')}</span>
                   <span className="font-bold">
                     {((team.goalsAgainst || 0) / (team.played || 1)).toFixed(1)}
                   </span>
                 </div>
                 <div className="flex justify-between">
-                  <span>Diferencia de goles</span>
-                  <span className={`font-bold ${(team.goalDifference || 0) >= 0 ? 'text-green-600' : 'text-red-600'}`}>
-                    {(team.goalDifference || 0) >= 0 ? '+' : ''}{team.goalDifference}
+                  <span>{t('goalDifferenceLong')}</span>
+                  <span
+                    className={`font-bold ${
+                      (team.goalDifference || 0) >= 0 ? 'text-green-600' : 'text-red-600'
+                    }`}
+                  >
+                    {(team.goalDifference || 0) >= 0 ? '+' : ''}
+                    {team.goalDifference}
                   </span>
                 </div>
               </CardContent>

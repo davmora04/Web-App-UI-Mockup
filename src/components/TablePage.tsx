@@ -2,9 +2,9 @@ import React from 'react';
 import { ArrowUpDown, ArrowUp, ArrowDown, Download } from 'lucide-react';
 import { Button } from './ui/button';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from './ui/table';
-import { Badge } from './ui/badge';
+
 import { useApp, teams, leagues } from './AppContext';
-import { toast } from 'sonner@2.0.3';
+import { toast } from 'sonner';
 
 type SortField = 'position' | 'team' | 'played' | 'won' | 'drawn' | 'lost' | 'goalsFor' | 'goalsAgainst' | 'goalDifference' | 'points';
 type SortDirection = 'asc' | 'desc';
@@ -39,8 +39,8 @@ export const TablePage: React.FC<TablePageProps> = ({ onViewTeamDetail }) => {
   };
 
   const sortedTeams = [...leagueTeams].sort((a, b) => {
-    let aValue = a[sortField];
-    let bValue = b[sortField];
+    let aValue: any = a[sortField as keyof typeof a];
+    let bValue: any = b[sortField as keyof typeof b];
 
     if (sortField === 'team') {
       aValue = a.name;
@@ -69,9 +69,46 @@ export const TablePage: React.FC<TablePageProps> = ({ onViewTeamDetail }) => {
   };
 
   const handleExportCSV = () => {
-    // Simulación de exportación CSV
-    toast.success('CSV exportado correctamente');
-  };
+  if (!leagueTeams.length) {
+    toast.error(t('noDataToExport'));
+    return;
+  }
+  // Encabezados (localizados)
+  const headers = [
+  t('posShort'), t('teamShort'), t('playedShort'), t('wonShort'), t('drawnShort'),
+  t('lostShort'), t('goalsForShort'), t('goalsAgainstShort'), t('goalDifferenceShort'),
+  t('pointsShort'), t('formShort')
+  ];
+
+  const rows = leagueTeams.map(team => [
+    team.position,
+    team.name,
+    team.played,
+    team.won,
+    team.drawn,
+    team.lost,
+    team.goalsFor,
+    team.goalsAgainst,
+    team.goalDifference,
+    team.points,
+    team.form ? team.form.join('') : ''
+  ]);
+
+  const csvContent = [headers, ...rows]
+    .map(row => row.map(val => `"${val ?? ''}"`).join(','))
+    .join('\n');
+
+  const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+  const url = URL.createObjectURL(blob);
+  const link = document.createElement('a');
+  link.href = url;
+  link.setAttribute('download', `${currentLeague?.name || t('table')}.csv`);
+  document.body.appendChild(link);
+  link.click();
+  document.body.removeChild(link);
+  URL.revokeObjectURL(url);
+  toast.success(t('csvExported'));
+};
 
   const getFormBadges = (form?: ('W' | 'D' | 'L')[]) => {
     if (!form) return null;
@@ -113,7 +150,7 @@ export const TablePage: React.FC<TablePageProps> = ({ onViewTeamDetail }) => {
         <div>
           <h1 className="text-3xl font-bold">{t('table')}</h1>
           <p className="text-muted-foreground">
-            {currentLeague?.name} - Temporada 2024/25
+            {currentLeague?.name} - {t('season')} 2024/25
           </p>
         </div>
         
@@ -243,7 +280,7 @@ export const TablePage: React.FC<TablePageProps> = ({ onViewTeamDetail }) => {
                   onClick={() => handleSort('points')}
                   className="flex items-center space-x-1 p-0 h-auto font-bold"
                 >
-                  <span>{t('points')}</span>
+                  <span>{t('pointsShort')}</span>
                   {getSortIcon('points')}
                 </Button>
               </TableHead>
@@ -296,16 +333,16 @@ export const TablePage: React.FC<TablePageProps> = ({ onViewTeamDetail }) => {
       {/* Leyenda */}
       <div className="mt-6 flex flex-wrap gap-4 text-sm">
         <div className="flex items-center space-x-2">
-          <div className="w-4 h-4 bg-green-500 rounded"></div>
-          <span>Champions League</span>
+          <div className="w-4 h-4 bg-green-500 rounded" />
+          <span>{t('championsLeague')}</span>
         </div>
         <div className="flex items-center space-x-2">
-          <div className="w-4 h-4 bg-blue-500 rounded"></div>
-          <span>Europa League</span>
+          <div className="w-4 h-4 bg-blue-500 rounded" />
+          <span>{t('europaLeague')}</span>
         </div>
         <div className="flex items-center space-x-2">
-          <div className="w-4 h-4 bg-red-500 rounded"></div>
-          <span>Descenso</span>
+          <div className="w-4 h-4 bg-red-500 rounded" />
+          <span>{t('relegation')}</span>
         </div>
       </div>
     </div>

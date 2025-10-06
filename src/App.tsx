@@ -1,3 +1,8 @@
+/**
+ * StatFut - Aplicación de Estadísticas de Fútbol
+ * Componente principal que gestiona la navegación y estado de la aplicación
+ */
+
 import React from 'react';
 import { AppProvider, useApp } from './components/AppContext';
 import { Navbar } from './components/Navbar';
@@ -11,18 +16,43 @@ import { TeamDetail } from './components/TeamDetail';
 import { MatchDetail } from './components/MatchDetail';
 import { HeadToHead } from './components/HeadToHead';
 import { ProfilePage } from './components/ProfilePage';
+import { SearchResults } from './components/SearchResults';
+import { OnboardingTour } from './components/OnboardingTour';
 import { Toaster } from './components/ui/sonner';
+
+// Interfaces para el estado de la aplicación
+interface SearchResults {
+  teams: any[];
+  leagues: any[];
+  news: any[];
+  matches: any[];
+}
 
 interface AppState {
   selectedNewsId?: string;
   selectedMatchId?: string;
   selectedTeamId?: string;
   headToHeadTeams?: [string, string];
+  searchResults?: SearchResults;
+  searchQuery?: string;
 }
 
 const AppContent: React.FC = () => {
   const { currentPage, setCurrentPage } = useApp();
   const [appState, setAppState] = React.useState<AppState>({});
+  const [showTour, setShowTour] = React.useState(false);
+
+  // Verificar si es la primera vez del usuario
+  React.useEffect(() => {
+    const tourCompleted = localStorage.getItem('statfut-tour-completed');
+    
+    // Siempre mostrar el tour para testing
+    localStorage.removeItem('statfut-tour-completed');
+    
+    if (!tourCompleted) {
+      setTimeout(() => setShowTour(true), 500);
+    }
+  }, []);
 
   const handleViewMatchDetail = (matchId: string) => {
     setAppState(prev => ({ ...prev, selectedMatchId: matchId }));
@@ -88,11 +118,7 @@ const AppContent: React.FC = () => {
         return <SettingsPage />;
 
       case 'profile':
-        return (
-          <ProfilePage 
-            onViewTeamDetail={handleViewTeamDetail}
-          />
-        );
+        return <ProfilePage />;
 
       case 'team-detail':
         return appState.selectedTeamId ? (
@@ -129,6 +155,24 @@ const AppContent: React.FC = () => {
         ) : (
           <HomePage onViewMatchDetail={handleViewMatchDetail} />
         );
+
+      case 'search-results':
+        return appState.searchResults ? (
+          <SearchResults
+            results={appState.searchResults}
+            query={appState.searchQuery || ''}
+            onBack={() => setCurrentPage('home')}
+            onViewTeamDetail={handleViewTeamDetail}
+            onViewMatchDetail={handleViewMatchDetail}
+            onViewNewsDetail={handleViewNewsDetail}
+            onSelectLeague={(leagueId: string) => {
+              setAppState(prev => ({ ...prev, selectedLeagueId: leagueId }));
+              setCurrentPage('table');
+            }}
+          />
+        ) : (
+          <HomePage onViewMatchDetail={handleViewMatchDetail} />
+        );
       
       default:
         return (
@@ -141,9 +185,40 @@ const AppContent: React.FC = () => {
   };
 
   const handleSearch = (query: string) => {
-    console.log('Searching for:', query);
-    // En una aplicación real, esto implementaría la búsqueda
-    // Podría filtrar equipos, noticias, jugadores, etc.
+    if (!query.trim()) return;
+    
+    // Buscar en equipos, ligas, noticias y partidos
+    import('./components/AppContext').then(({ teams, leagues, news, matches }) => {
+      const results = {
+        teams: teams.filter(team => 
+          team.name.toLowerCase().includes(query.toLowerCase())
+        ),
+        leagues: leagues.filter(league => 
+          league.name.toLowerCase().includes(query.toLowerCase()) ||
+          league.country.toLowerCase().includes(query.toLowerCase())
+        ),
+        news: news.filter(article => 
+          article.title.toLowerCase().includes(query.toLowerCase()) ||
+          article.summary.toLowerCase().includes(query.toLowerCase())
+        ),
+        matches: matches.filter(match =>
+          match.homeTeam.name.toLowerCase().includes(query.toLowerCase()) ||
+          match.awayTeam.name.toLowerCase().includes(query.toLowerCase())
+        )
+      };
+      
+      // Si encontramos resultados, mostrar la página de búsqueda
+      if (results.teams.length > 0 || results.leagues.length > 0 || 
+          results.news.length > 0 || results.matches.length > 0) {
+        setAppState(prev => ({ ...prev, searchResults: results, searchQuery: query }));
+        setCurrentPage('search-results');
+      } else {
+        // Mostrar mensaje de no resultados
+        import('sonner').then(({ toast }) => {
+          toast.error(`No se encontraron resultados para "${query}"`);
+        });
+      }
+    });
   };
 
   return (
@@ -155,6 +230,10 @@ const AppContent: React.FC = () => {
       <main className="flex-1">
         {renderCurrentPage()}
       </main>
+      <OnboardingTour
+        isOpen={showTour}
+        onClose={() => setShowTour(false)}
+      />
       <Toaster position="bottom-right" />
     </div>
   );

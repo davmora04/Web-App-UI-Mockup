@@ -1,10 +1,10 @@
 import React from 'react';
-import { ArrowLeft, TrendingUp, Target, Shield } from 'lucide-react';
+import { ArrowLeft, TrendingUp, Target } from 'lucide-react';
 import { Button } from './ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from './ui/card';
 import { Badge } from './ui/badge';
 import { Progress } from './ui/progress';
-import { useApp, teams, Team } from './AppContext';
+import { useApp, teams } from './AppContext';
 
 interface HeadToHeadProps {
   teamAId: string;
@@ -22,7 +22,7 @@ const mockH2HMatches = [
 ];
 
 export const HeadToHead: React.FC<HeadToHeadProps> = ({ teamAId, teamBId, onBack }) => {
-  const { t } = useApp();
+  const { } = useApp();
   
   const teamA = teams.find(t => t.id === teamAId);
   const teamB = teams.find(t => t.id === teamBId);

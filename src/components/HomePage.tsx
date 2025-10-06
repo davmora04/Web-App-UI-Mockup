@@ -2,6 +2,11 @@ import React from 'react';
 import { Sidebar } from './Sidebar';
 import { MatchCard } from './MatchCard';
 import { useApp, matches, leagues } from './AppContext';
+import { Button } from './ui/button';
+import { Card, CardContent, CardHeader, CardTitle } from './ui/card';
+import { Bell, MessageCircle, Zap, AlertTriangle, Settings } from 'lucide-react';
+import { toast } from 'sonner';
+import { DragDropFavorites } from './DragDropFavorites';
 
 interface HomePageProps {
   onViewMatchDetail?: (matchId: string) => void;
@@ -9,7 +14,8 @@ interface HomePageProps {
 }
 
 export const HomePage: React.FC<HomePageProps> = ({ onViewMatchDetail, onViewTeamDetail }) => {
-  const { selectedLeague, favorites, t } = useApp();
+  const { selectedLeague, selectedSeason, favorites, t } = useApp();
+  const [showDragDrop, setShowDragDrop] = React.useState(false);
 
   // Filtrar partidos por liga seleccionada
   const filteredMatches = matches
@@ -31,7 +37,7 @@ export const HomePage: React.FC<HomePageProps> = ({ onViewMatchDetail, onViewTea
               <div>
                 <h1 className="text-3xl font-bold">{currentLeague?.name}</h1>
                 <p className="text-muted-foreground">
-                  {currentLeague?.country} • Temporada 2024/25
+                  {t('leagueSeason', { country: currentLeague?.country ?? '', season: selectedSeason })}
                 </p>
               </div>
             </div>
@@ -53,14 +59,81 @@ export const HomePage: React.FC<HomePageProps> = ({ onViewMatchDetail, onViewTea
               </div>
             ) : (
               <div className="text-center py-8 text-muted-foreground">
-                <p>No hay partidos disponibles para esta liga.</p>
+                <p>{t('noMatchesAvailable')}</p>
               </div>
             )}
           </section>
 
+          {/* Prueba de Notificaciones */}
+          <section>
+            <h2 className="text-2xl font-bold mb-4">{t('testNotifications')}</h2>
+            <Card>
+              <CardHeader>
+                <CardTitle className="flex items-center space-x-2">
+                  <Bell className="h-5 w-5" />
+                  <span>{t('notificationSystem')}</span>
+                </CardTitle>
+              </CardHeader>
+              <CardContent>
+                <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+                  <Button
+                    variant="outline"
+                    onClick={() => toast.success(t('notif_goal'))}
+                    className="flex flex-col items-center space-y-2 h-20"
+                  >
+                    <Zap className="h-5 w-5 text-green-600" />
+                    <span className="text-sm">{t('goalShort')}</span>
+                  </Button>
+                  
+                  <Button
+                    variant="outline"
+                    onClick={() => toast.info(t('notif_news'))}
+                    className="flex flex-col items-center space-y-2 h-20"
+                  >
+                    <MessageCircle className="h-5 w-5 text-blue-600" />
+                    <span className="text-sm">{t('newsShort')}</span>
+                  </Button>
+                  
+                  <Button
+                    variant="outline"
+                    onClick={() => toast.warning(t('notif_match_soon'))}
+                    className="flex flex-col items-center space-y-2 h-20"
+                  >
+                    <AlertTriangle className="h-5 w-5 text-orange-600" />
+                    <span className="text-sm">{t('reminder')}</span>
+                  </Button>
+                  
+                  <Button
+                    variant="outline"
+                    onClick={() => toast(t('notif_custom_title'), {
+                      description: t('notif_custom_desc'),
+                      duration: 4000
+                    })}
+                    className="flex flex-col items-center space-y-2 h-20"
+                  >
+                    <Bell className="h-5 w-5 text-purple-600" />
+                    <span className="text-sm">{t('custom')}</span>
+                  </Button>
+                </div>
+              </CardContent>
+            </Card>
+          </section>
+
           {/* Acceso Rápido a Favoritos */}
-          <section className="mt-8">
-            <h3 className="text-xl font-bold mb-4">{t('favorites')}</h3>
+          <section className="mt-8" data-tour="favorites">
+            <div className="flex items-center justify-between mb-4">
+              <h3 className="text-xl font-bold">{t('favorites')}</h3>
+              {favorites.length > 1 && (
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={() => setShowDragDrop(true)}
+                >
+                  <Settings className="h-4 w-4 mr-2" />
+                  {t('reorder')}
+                </Button>
+              )}
+            </div>
             {favorites.length > 0 ? (
               <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
                 {favorites.slice(0, 6).map((team) => (
@@ -84,11 +157,17 @@ export const HomePage: React.FC<HomePageProps> = ({ onViewMatchDetail, onViewTea
             ) : (
               <div className="bg-muted rounded-lg p-4">
                 <p className="text-muted-foreground text-center">
-                  Añade equipos a tus favoritos para acceso rápido
+                  {t('addTeamsToFavorites')}
                 </p>
               </div>
             )}
           </section>
+
+          {/* Modal de Drag & Drop */}
+          <DragDropFavorites
+            isOpen={showDragDrop}
+            onClose={() => setShowDragDrop(false)}
+          />
         </div>
       </main>
     </div>

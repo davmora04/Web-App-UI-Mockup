@@ -1,7 +1,7 @@
 import React from 'react';
 import { Calendar as CalendarIcon, Clock, MapPin } from 'lucide-react';
 import { Button } from './ui/button';
-import { Card, CardContent, CardHeader, CardTitle } from './ui/card';
+import { Card, CardContent } from './ui/card';
 import { Badge } from './ui/badge';
 import { useApp, matches, leagues } from './AppContext';
 
@@ -10,7 +10,7 @@ interface CalendarPageProps {
 }
 
 export const CalendarPage: React.FC<CalendarPageProps> = ({ onViewMatchDetail }) => {
-  const { selectedLeague, t } = useApp();
+  const { selectedLeague, t, formatDate, formatTime } = useApp();
 
   const currentLeague = leagues.find(l => l.id === selectedLeague);
   
@@ -27,36 +27,17 @@ export const CalendarPage: React.FC<CalendarPageProps> = ({ onViewMatchDetail })
     return groups;
   }, {} as Record<string, typeof matches>);
 
-  const formatDate = (dateString: string) => {
-    const date = new Date(dateString);
-    const today = new Date();
-    const tomorrow = new Date(today);
-    tomorrow.setDate(today.getDate() + 1);
-    const yesterday = new Date(today);
-    yesterday.setDate(today.getDate() - 1);
-
-    if (date.toDateString() === today.toDateString()) {
-      return 'Hoy';
-    } else if (date.toDateString() === tomorrow.toDateString()) {
-      return 'Mañana';
-    } else if (date.toDateString() === yesterday.toDateString()) {
-      return 'Ayer';
-    } else {
-      return date.toLocaleDateString('es-ES', {
-        weekday: 'long',
-        day: 'numeric',
-        month: 'long'
-      });
-    }
+  const formatDayLabel = (iso: string) => {
+  const d = new Date(iso);
+  const today = new Date();
+  const tmw = new Date(today); tmw.setDate(today.getDate() + 1);
+  const yest = new Date(today); yest.setDate(today.getDate() - 1);
+  if (d.toDateString() === today.toDateString()) return t('today_time');
+  if (d.toDateString() === tmw.toDateString()) return t('tomorrow_time');
+  if (d.toDateString() === yest.toDateString()) return t('yesterday_time');
+  return formatDate(d, { weekday: 'long', day: 'numeric', month: 'long' });
   };
 
-  const formatTime = (dateString: string) => {
-    return new Date(dateString).toLocaleTimeString('es-ES', {
-      hour: '2-digit',
-      minute: '2-digit',
-      timeZoneName: 'short'
-    });
-  };
 
   const getStatusBadge = (status: string) => {
     switch (status) {
@@ -71,11 +52,11 @@ export const CalendarPage: React.FC<CalendarPageProps> = ({ onViewMatchDetail })
     }
   };
 
-  const getVenueBadge = (isHome: boolean, teamName: string) => {
+  const getVenueBadge = (isHome: boolean) => {
     return (
       <Badge variant="outline" className="text-xs">
         <MapPin className="h-3 w-3 mr-1" />
-        {isHome ? t('home') : t('away')}
+        {isHome ? t('homeTeam') : t('awayTeam')}
       </Badge>
     );
   };
@@ -92,7 +73,7 @@ export const CalendarPage: React.FC<CalendarPageProps> = ({ onViewMatchDetail })
           <div>
             <h1 className="text-3xl font-bold">{t('calendar')}</h1>
             <p className="text-muted-foreground">
-              {currentLeague?.name} • Zona horaria: {userTimezone}
+              {currentLeague?.name} • {t('timezone')}: {userTimezone}
             </p>
           </div>
         </div>
@@ -107,7 +88,7 @@ export const CalendarPage: React.FC<CalendarPageProps> = ({ onViewMatchDetail })
               {/* Encabezado de fecha */}
               <div className="mb-4">
                 <h2 className="text-xl font-bold text-primary">
-                  {formatDate(date)}
+                  {formatDayLabel(date)}
                 </h2>
                 <div className="w-full h-px bg-border mt-2"></div>
               </div>
@@ -135,7 +116,7 @@ export const CalendarPage: React.FC<CalendarPageProps> = ({ onViewMatchDetail })
                                 <span className="text-xl">{match.homeTeam.logo}</span>
                                 <div>
                                   <p className="font-medium">{match.homeTeam.name}</p>
-                                  {getVenueBadge(true, match.homeTeam.name)}
+                                  {getVenueBadge(true)}
                                 </div>
                               </div>
 
@@ -165,7 +146,7 @@ export const CalendarPage: React.FC<CalendarPageProps> = ({ onViewMatchDetail })
                               <div className="flex items-center space-x-2 min-w-[150px] justify-end">
                                 <div className="text-right">
                                   <p className="font-medium">{match.awayTeam.name}</p>
-                                  {getVenueBadge(false, match.awayTeam.name)}
+                                  {getVenueBadge(false)}
                                 </div>
                                 <span className="text-xl">{match.awayTeam.logo}</span>
                               </div>
@@ -180,7 +161,7 @@ export const CalendarPage: React.FC<CalendarPageProps> = ({ onViewMatchDetail })
                               variant="outline"
                               onClick={() => onViewMatchDetail?.(match.id)}
                             >
-                              Detalle
+                              {t('viewDetail')}
                             </Button>
                           </div>
                         </div>
@@ -195,7 +176,7 @@ export const CalendarPage: React.FC<CalendarPageProps> = ({ onViewMatchDetail })
       {/* Información adicional */}
       <div className="mt-8 bg-muted rounded-lg p-4">
         <p className="text-sm text-muted-foreground text-center">
-          Todos los horarios se muestran en tu zona horaria local ({userTimezone})
+          {t('allTimesLocal', {tz: userTimezone})}
         </p>
       </div>
     </div>

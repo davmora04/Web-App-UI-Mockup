@@ -4,11 +4,12 @@ import { Button } from './ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from './ui/card';
 import { Badge } from './ui/badge';
 import { Separator } from './ui/separator';
-import { useApp, matches, Match } from './AppContext';
+import { useApp, matches } from './AppContext';
 
 interface MatchDetailProps {
   matchId: string;
   onBack?: () => void;
+  onViewTeamDetail?: (teamId: string) => void;
 }
 
 // Datos mock para alineaciones y eventos
@@ -55,8 +56,9 @@ const mockEvents = [
   { minute: 78, type: 'substitution', team: 'home', player: 'Modrić → Bellingham', description: 'Cambio: Sale Modrić, entra Bellingham' }
 ];
 
-export const MatchDetail: React.FC<MatchDetailProps> = ({ matchId, onBack }) => {
-  const { t } = useApp();
+export const MatchDetail: React.FC<MatchDetailProps> = ({ matchId, onBack, onViewTeamDetail }) => {
+  const { t, language } = useApp();
+  const locale = language === 'es' ? 'es-ES' : 'en-US';
   
   const match = matches.find(m => m.id === matchId);
 
@@ -72,7 +74,7 @@ export const MatchDetail: React.FC<MatchDetailProps> = ({ matchId, onBack }) => 
   }
 
   const formatDate = (dateString: string) => {
-    return new Date(dateString).toLocaleString('es-ES', {
+    return new Date(dateString).toLocaleString(locale, {
       weekday: 'long',
       day: 'numeric',
       month: 'long',
@@ -103,7 +105,7 @@ export const MatchDetail: React.FC<MatchDetailProps> = ({ matchId, onBack }) => 
       <div className="flex items-center mb-6">
         <Button variant="ghost" onClick={onBack}>
           <ArrowLeft className="h-4 w-4 mr-2" />
-          Volver
+          {t('back')}
         </Button>
       </div>
 
@@ -115,8 +117,8 @@ export const MatchDetail: React.FC<MatchDetailProps> = ({ matchId, onBack }) => 
               match.status === 'live' ? 'destructive' :
               match.status === 'finished' ? 'default' : 'secondary'
             }>
-              {match.status === 'live' ? 'EN VIVO' : 
-               match.status === 'finished' ? 'FINALIZADO' : 'PROGRAMADO'}
+              {match.status === 'live' ? t('match_status_live') : 
+               match.status === 'finished' ? t('match_status_finished') : t('match_status_scheduled')}
             </Badge>
           </div>
 
@@ -150,7 +152,7 @@ export const MatchDetail: React.FC<MatchDetailProps> = ({ matchId, onBack }) => 
             <div className="flex flex-col items-center space-y-2 flex-1">
               <span className="text-4xl">{match.awayTeam.logo}</span>
               <h2 className="text-xl font-bold text-center">{match.awayTeam.name}</h2>
-              <Badge variant="outline">{t('away')}</Badge>
+              <Badge variant="outline">{t('awayTeam')}</Badge>
             </div>
           </div>
 
@@ -162,7 +164,7 @@ export const MatchDetail: React.FC<MatchDetailProps> = ({ matchId, onBack }) => 
             </div>
             <div className="flex items-center space-x-1">
               <MapPin className="h-4 w-4" />
-              <span>Santiago Bernabéu</span>
+              <span>{t('stadium')}: Santiago Bernabéu</span>
             </div>
           </div>
         </CardContent>
@@ -172,12 +174,12 @@ export const MatchDetail: React.FC<MatchDetailProps> = ({ matchId, onBack }) => 
         {/* Timeline de eventos */}
         <Card>
           <CardHeader>
-            <CardTitle>Eventos del Partido</CardTitle>
+            <CardTitle>{t('match_events')}</CardTitle>
           </CardHeader>
           <CardContent>
             {match.status === 'scheduled' ? (
               <p className="text-muted-foreground text-center py-4">
-                El partido aún no ha comenzado
+                {t('match_not_started')}
               </p>
             ) : (
               <div className="space-y-4">
@@ -203,7 +205,7 @@ export const MatchDetail: React.FC<MatchDetailProps> = ({ matchId, onBack }) => 
         {/* Alineaciones */}
         <Card>
           <CardHeader>
-            <CardTitle>Alineaciones</CardTitle>
+            <CardTitle>{t('match_lineups')}</CardTitle>
           </CardHeader>
           <CardContent className="space-y-6">
             {/* Equipo Local */}

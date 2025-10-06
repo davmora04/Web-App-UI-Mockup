@@ -10,7 +10,9 @@ import {
   Moon,
   Sun,
   Settings,
+  Bell
 } from "lucide-react";
+import { toast } from 'sonner';
 import { Button } from "./ui/button";
 import { Input } from "./ui/input";
 import {
@@ -18,10 +20,10 @@ import {
   SelectContent,
   SelectItem,
   SelectTrigger,
-  SelectValue,
 } from "./ui/select";
 import { Switch } from "./ui/switch";
 import { useApp } from "./AppContext";
+import { useLiveRegion } from "../hooks/useAccessibility";
 
 interface NavbarProps {
   onSearch?: (query: string) => void;
@@ -42,10 +44,28 @@ export const Navbar: React.FC<NavbarProps> = ({
     t,
   } = useApp();
   const [searchQuery, setSearchQuery] = React.useState("");
+  const { announce } = useLiveRegion();
 
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault();
-    onSearch?.(searchQuery);
+    if (searchQuery.trim()) {
+      onSearch?.(searchQuery);
+      announce(`Searching for ${searchQuery}`);
+    }
+  };
+
+  const handleInputKeyDown = (e: React.KeyboardEvent) => {
+    if (e.key === 'Enter') {
+      handleSearch(e as any);
+    }
+  };
+
+
+
+  const handleThemeChange = (checked: boolean) => {
+    const newTheme = checked ? 'dark' : 'light';
+    setTheme(newTheme);
+    announce(`Theme changed to ${newTheme} mode`);
   };
 
   const navItems = [
@@ -56,14 +76,17 @@ export const Navbar: React.FC<NavbarProps> = ({
   ];
 
   return (
-    <nav className="bg-card border-b border-border">
+    <nav className="bg-card border-b border-border" role="navigation" aria-label={t('mainNavigation')}>
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex items-center justify-between h-16">
+        <div className="flex items-center justify-between h-20 py-2">
           {/* Logo */}
           <div className="flex-shrink-0">
-            <div className="flex items-center">
-              <div className="bg-primary text-primary-foreground rounded-lg p-2">
-                <span className="font-bold">⚽</span>
+            <div className="flex items-center" role="banner">
+              <div 
+                className="bg-primary text-primary-foreground rounded-lg p-2"
+                aria-label="StatFut logo"
+              >
+                <span className="font-bold" aria-hidden="true">⚽</span>
               </div>
               <span className="ml-2 text-xl font-bold">
                 StatFut
@@ -72,23 +95,42 @@ export const Navbar: React.FC<NavbarProps> = ({
           </div>
 
           {/* Search Bar */}
-          <div className="flex-1 max-w-lg mx-8">
-            <form onSubmit={handleSearch} className="relative">
-              <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                <Search className="h-5 w-5 text-muted-foreground" />
+          <div className="flex-1 max-w-3xl mx-8 md:mx-16">
+            <form onSubmit={handleSearch} className="relative group search-container" role="search">
+              <div className="absolute inset-y-0 left-0 pl-5 flex items-center pointer-events-none">
+                <Search className="h-4 w-4 text-muted-foreground/70 group-hover:text-primary/80 group-focus-within:text-primary transition-all duration-300" aria-hidden="true" />
               </div>
               <Input
                 type="text"
-                placeholder="Buscar equipos, jugadores, noticias..."
+                placeholder={t('searchPlaceholder')}
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                className="pl-10 pr-4 py-2 w-full"
+                onKeyDown={handleInputKeyDown}
+                className="pl-12 pr-8 py-5 w-full min-w-0 bg-gradient-to-r from-muted/30 to-muted/20 hover:from-muted/50 hover:to-muted/40 focus:from-background focus:to-background/90 backdrop-blur-sm border border-border/50 hover:border-border/80 focus:border-primary/50 transition-all duration-300 rounded-2xl shadow-sm hover:shadow-lg focus:shadow-xl text-base placeholder:text-muted-foreground/60 font-medium relative z-10"
+                aria-label={t('search')}
+                aria-describedby="search-description"
+                data-tour="search"
               />
+              
+              {/* Search button for mobile */}
+              <button
+                type="submit"
+                className="absolute inset-y-0 right-0 pr-4 flex items-center opacity-0 group-hover:opacity-100 group-focus-within:opacity-100 transition-opacity duration-300 md:hidden"
+                aria-label="Buscar"
+              >
+                <div className="bg-primary/10 hover:bg-primary/20 rounded-lg p-1.5 transition-colors">
+                  <Search className="h-4 w-4 text-primary" />
+                </div>
+              </button>
+
+              <span id="search-description" className="sr-only hidden absolute opacity-0 pointer-events-none" style={{display: 'none'}}>
+                {t('searchPlaceholder')}
+              </span>
             </form>
           </div>
 
           {/* Navigation Items */}
-          <div className="hidden md:block">
+          <div className="hidden md:block" data-tour="navigation">
             <div className="ml-10 flex items-baseline space-x-4">
               {navItems.map((item) => {
                 const Icon = item.icon;
@@ -102,6 +144,8 @@ export const Navbar: React.FC<NavbarProps> = ({
                     }
                     onClick={() => setCurrentPage(item.id)}
                     className="flex items-center space-x-1"
+                    aria-label={`Navigate to ${item.label}`}
+                    aria-current={currentPage === item.id ? "page" : undefined}
                   >
                     <Icon className="h-4 w-4" />
                     <span className="hidden lg:block">
@@ -115,6 +159,20 @@ export const Navbar: React.FC<NavbarProps> = ({
 
           {/* Right Side Controls */}
           <div className="flex items-center space-x-4">
+            {/* Tour Button */}
+            <Button
+              variant="ghost"
+              size="sm"
+              onClick={() => {
+                localStorage.removeItem('statfut-tour-completed');
+                window.location.reload();
+              }}
+              className="hidden lg:flex"
+              title="Reiniciar tour de bienvenida"
+            >
+              ?
+            </Button>
+
             {/* Language Selector */}
             <Select
               value={language}
@@ -122,8 +180,8 @@ export const Navbar: React.FC<NavbarProps> = ({
                 setLanguage(value)
               }
             >
-              <SelectTrigger className="w-20">
-                <Globe className="h-4 w-4" />
+              <SelectTrigger className="w-20" aria-label="Select language">
+                <Globe className="h-4 w-4" aria-hidden="true" />
               </SelectTrigger>
               <SelectContent>
                 <SelectItem value="es">ES</SelectItem>
@@ -133,15 +191,37 @@ export const Navbar: React.FC<NavbarProps> = ({
 
             {/* Theme Toggle */}
             <div className="flex items-center space-x-2">
-              <Sun className="h-4 w-4" />
+              <Sun className="h-4 w-4" aria-hidden="true" />
               <Switch
                 checked={theme === "dark"}
-                onCheckedChange={(checked) =>
-                  setTheme(checked ? "dark" : "light")
+                onCheckedChange={(checked: boolean) =>
+                  handleThemeChange(checked)
                 }
+                aria-label={`Switch to ${theme === 'dark' ? 'light' : 'dark'} mode`}
               />
-              <Moon className="h-4 w-4" />
+              <Moon className="h-4 w-4" aria-hidden="true" />
             </div>
+
+            {/* Notification Test */}
+            <Button
+              variant="ghost"
+              size="icon"
+              onClick={() => {
+                const notifications = [
+                  () => toast.success(t('notif_goal')),
+                  () => toast.info(t('notif_news')),
+                  () => toast.warning(t('notif_match_soon')),
+                  () => toast(t('notif_custom_title'), {
+                    description: t('notif_custom_desc')
+                  })
+                ];
+                const randomNotification = notifications[Math.floor(Math.random() * notifications.length)];
+                randomNotification();
+              }}
+              title={t('notifications')}
+            >
+              <Bell className="h-4 w-4" />
+            </Button>
 
             {/* Settings */}
             <Button
@@ -210,6 +290,8 @@ export const Navbar: React.FC<NavbarProps> = ({
           </div>
         </div>
       </div>
+
+
     </nav>
   );
 };

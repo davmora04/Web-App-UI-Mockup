@@ -2,6 +2,7 @@
 
 :root {
   --font-size: 14px;
+  font-size: var(--font-size);
   --background: #ffffff;
   --foreground: oklch(0.145 0 0);
   --card: #ffffff;
@@ -127,6 +128,22 @@
   body {
     @apply bg-background text-foreground;
   }
+  
+  /* Screen reader only content - completely hidden from visual display */
+  .sr-only {
+    position: absolute !important;
+    width: 1px !important;
+    height: 1px !important;
+    padding: 0 !important;
+    margin: -1px !important;
+    overflow: hidden !important;
+    clip: rect(0, 0, 0, 0) !important;
+    white-space: nowrap !important;
+    border: 0 !important;
+    opacity: 0 !important;
+    visibility: hidden !important;
+    display: none !important;
+  }
 }
 
 /**
@@ -186,4 +203,263 @@
 
 html {
   font-size: var(--font-size);
+}
+
+/* Onboarding Tour Styles */
+.tour-highlight {
+  position: relative;
+  z-index: 45 !important;
+  border-radius: 8px;
+  box-shadow: 0 0 0 4px rgba(59, 130, 246, 0.5), 0 0 20px rgba(59, 130, 246, 0.3);
+  transition: all 0.3s ease;
+}
+
+.tour-highlight::after {
+  content: '';
+  position: absolute;
+  inset: -4px;
+  border: 2px solid rgb(59, 130, 246);
+  border-radius: 12px;
+  pointer-events: none;
+  animation: pulse 2s infinite;
+}
+
+@keyframes pulse {
+  0%, 100% { 
+    opacity: 1; 
+    transform: scale(1);
+  }
+  50% { 
+    opacity: 0.5; 
+    transform: scale(1.02);
+  }
+}
+
+/* High Contrast Mode */
+.high-contrast {
+  --background: #000000;
+  --foreground: #ffffff;
+  --border: #ffffff;
+  --muted: #333333;
+  --muted-foreground: #cccccc;
+}
+
+.high-contrast .dark {
+  --background: #ffffff;
+  --foreground: #000000;
+  --border: #000000;
+  --muted: #f0f0f0;
+  --muted-foreground: #333333;
+}
+
+/* Reduced Motion */
+.reduce-motion * {
+  animation-duration: 0.01ms !important;
+  animation-iteration-count: 1 !important;
+  transition-duration: 0.01ms !important;
+}
+
+/* Smooth scrolling */
+html {
+  scroll-behavior: smooth;
+}
+
+/* Focus improvements */
+*:focus-visible {
+  outline: 2px solid hsl(var(--ring));
+  outline-offset: 2px;
+}
+
+/* Better text selection */
+::selection {
+  background-color: rgba(59, 130, 246, 0.3);
+}
+
+/* Improved button hover states */
+button:hover {
+  transform: translateY(-1px);
+  transition: transform 0.2s ease;
+}
+
+button:active {
+  transform: translateY(0);
+}
+
+/* Loading states */
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.animate-spin {
+  animation: spin 1s linear infinite;
+}
+
+/* Enhanced Search Bar */
+.search-container {
+  position: relative;
+  transition: all 0.3s ease;
+}
+
+.search-container:hover {
+  transform: translateY(-1px);
+  filter: drop-shadow(0 4px 8px rgba(0, 0, 0, 0.1));
+}
+
+.search-container:focus-within {
+  transform: translateY(-1px);
+  filter: drop-shadow(0 6px 12px rgba(0, 0, 0, 0.15));
+}
+
+/* Enhanced Input */
+input[type="text"]:focus {
+  outline: none;
+  box-shadow: 0 0 0 2px hsl(var(--primary) / 0.2);
+}
+
+/* Keyboard shortcut styling */
+kbd {
+  background: hsl(var(--muted));
+  border: 1px solid hsl(var(--border));
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+  transition: all 0.2s ease;
+}
+
+.group:hover kbd {
+  background: hsl(var(--accent));
+  border-color: hsl(var(--primary) / 0.3);
+}
+
+/* Custom scrollbar */
+::-webkit-scrollbar {
+  width: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: hsl(var(--muted));
+}
+
+::-webkit-scrollbar-thumb {
+  background: hsl(var(--muted-foreground));
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: hsl(var(--foreground));
+}
+
+/* Print styles */
+@media print {
+  .no-print {
+    display: none !important;
+  }
+  
+  * {
+    background: white !important;
+    color: black !important;
+  }
+}
+
+/* Enhanced Search Bar Styles */
+.search-container {
+  position: relative;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  margin: 8px 0; /* Margen vertical para más aire */
+}
+
+.search-container:hover {
+  transform: translateY(-1px);
+  filter: drop-shadow(0 4px 12px rgba(0, 0, 0, 0.08));
+}
+
+.search-container:focus-within {
+  transform: translateY(-2px);
+  filter: drop-shadow(0 8px 24px rgba(0, 0, 0, 0.12));
+}
+
+/* Enhanced Search Input */
+.search-container input[type="text"] {
+  position: relative;
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.9) 0%, rgba(249, 250, 251, 0.8) 100%);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  border: 1px solid rgba(209, 213, 219, 0.3);
+  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  min-height: 52px; /* Altura mínima más generosa */
+  line-height: 1.5; /* Mejor altura de línea */
+}
+
+.search-container input[type="text"]:hover {
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.95) 0%, rgba(249, 250, 251, 0.9) 100%);
+  border-color: rgba(209, 213, 219, 0.5);
+  box-shadow: 0 0 0 1px rgba(59, 130, 246, 0.1);
+}
+
+.search-container input[type="text"]:focus {
+  background: linear-gradient(135deg, rgba(255, 255, 255, 1) 0%, rgba(249, 250, 251, 0.98) 100%);
+  border-color: rgba(59, 130, 246, 0.5);
+  box-shadow: 
+    0 0 0 3px rgba(59, 130, 246, 0.1),
+    0 4px 16px rgba(59, 130, 246, 0.08);
+  outline: none;
+}
+
+/* Dark mode search bar */
+.dark .search-container input[type="text"] {
+  background: linear-gradient(135deg, rgba(17, 24, 39, 0.9) 0%, rgba(31, 41, 55, 0.8) 100%);
+  border-color: rgba(75, 85, 99, 0.3);
+  color: white;
+}
+
+.dark .search-container input[type="text"]:hover {
+  background: linear-gradient(135deg, rgba(17, 24, 39, 0.95) 0%, rgba(31, 41, 55, 0.9) 100%);
+  border-color: rgba(75, 85, 99, 0.5);
+  box-shadow: 0 0 0 1px rgba(59, 130, 246, 0.2);
+}
+
+.dark .search-container input[type="text"]:focus {
+  background: linear-gradient(135deg, rgba(17, 24, 39, 1) 0%, rgba(31, 41, 55, 0.98) 100%);
+  border-color: rgba(59, 130, 246, 0.6);
+  box-shadow: 
+    0 0 0 3px rgba(59, 130, 246, 0.2),
+    0 4px 16px rgba(59, 130, 246, 0.15);
+}
+
+/* Search icon animation */
+.search-container .lucide-search {
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.search-container:hover .lucide-search {
+  transform: scale(1.05);
+  color: rgba(59, 130, 246, 0.8);
+}
+
+.search-container:focus-within .lucide-search {
+  transform: scale(1.1);
+  color: rgba(59, 130, 246, 1);
+}
+
+/* Placeholder animation */
+.search-container input[type="text"]::placeholder {
+  transition: all 0.3s ease;
+  opacity: 0.6;
+}
+
+.search-container input[type="text"]:focus::placeholder {
+  opacity: 0.4;
+  transform: translateX(4px);
+}
+
+/* Mobile enhancements */
+@media (max-width: 768px) {
+  .search-container {
+    margin: 0 8px;
+  }
+  
+  .search-container input[type="text"] {
+    font-size: 16px; /* Prevents zoom on iOS */
+    padding: 12px 16px 12px 48px;
+  }
 }
