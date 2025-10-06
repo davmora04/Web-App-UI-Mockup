@@ -57,7 +57,8 @@ const mockEvents = [
 ];
 
 export const MatchDetail: React.FC<MatchDetailProps> = ({ matchId, onBack, onViewTeamDetail }) => {
-  const { t } = useApp();
+  const { t, language } = useApp();
+  const locale = language === 'es' ? 'es-ES' : 'en-US';
   
   const match = matches.find(m => m.id === matchId);
 
@@ -73,7 +74,7 @@ export const MatchDetail: React.FC<MatchDetailProps> = ({ matchId, onBack, onVie
   }
 
   const formatDate = (dateString: string) => {
-    return new Date(dateString).toLocaleString('es-ES', {
+    return new Date(dateString).toLocaleString(locale, {
       weekday: 'long',
       day: 'numeric',
       month: 'long',
@@ -104,7 +105,7 @@ export const MatchDetail: React.FC<MatchDetailProps> = ({ matchId, onBack, onVie
       <div className="flex items-center mb-6">
         <Button variant="ghost" onClick={onBack}>
           <ArrowLeft className="h-4 w-4 mr-2" />
-          Volver
+          {t('back')}
         </Button>
       </div>
 
@@ -116,8 +117,8 @@ export const MatchDetail: React.FC<MatchDetailProps> = ({ matchId, onBack, onVie
               match.status === 'live' ? 'destructive' :
               match.status === 'finished' ? 'default' : 'secondary'
             }>
-              {match.status === 'live' ? 'EN VIVO' : 
-               match.status === 'finished' ? 'FINALIZADO' : 'PROGRAMADO'}
+              {match.status === 'live' ? t('match_status_live') : 
+               match.status === 'finished' ? t('match_status_finished') : t('match_status_scheduled')}
             </Badge>
           </div>
 
@@ -163,7 +164,7 @@ export const MatchDetail: React.FC<MatchDetailProps> = ({ matchId, onBack, onVie
             </div>
             <div className="flex items-center space-x-1">
               <MapPin className="h-4 w-4" />
-              <span>Santiago Bernabéu</span>
+              <span>{t('stadium')}: Santiago Bernabéu</span>
             </div>
           </div>
         </CardContent>
@@ -173,12 +174,12 @@ export const MatchDetail: React.FC<MatchDetailProps> = ({ matchId, onBack, onVie
         {/* Timeline de eventos */}
         <Card>
           <CardHeader>
-            <CardTitle>Eventos del Partido</CardTitle>
+            <CardTitle>{t('match_events')}</CardTitle>
           </CardHeader>
           <CardContent>
             {match.status === 'scheduled' ? (
               <p className="text-muted-foreground text-center py-4">
-                El partido aún no ha comenzado
+                {t('match_not_started')}
               </p>
             ) : (
               <div className="space-y-4">
@@ -204,7 +205,7 @@ export const MatchDetail: React.FC<MatchDetailProps> = ({ matchId, onBack, onVie
         {/* Alineaciones */}
         <Card>
           <CardHeader>
-            <CardTitle>Alineaciones</CardTitle>
+            <CardTitle>{t('match_lineups')}</CardTitle>
           </CardHeader>
           <CardContent className="space-y-6">
             {/* Equipo Local */}

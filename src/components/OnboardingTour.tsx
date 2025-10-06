@@ -17,46 +17,48 @@ interface TourStep {
   position: 'top' | 'bottom' | 'left' | 'right';
 }
 
-const tourSteps: TourStep[] = [
-  {
-    id: 1,
-    title: '¡Bienvenido a StatFut! ⚽',
-    description: 'Tu nueva app de estadísticas de fútbol. Te mostraremos las funciones principales en solo 5 pasos.',
-    target: 'welcome',
-    position: 'bottom'
-  },
-  {
-    id: 2,
-    title: 'Búsqueda Rápida',
-    description: 'Usa la barra de búsqueda para encontrar equipos, partidos y noticias al instante. Solo escribe y presiona Enter.',
-    target: '[data-tour="search"]',
-    position: 'bottom'
-  },
-  {
-    id: 3,
-    title: 'Panel de Filtros',
-    description: 'Filtra por liga y temporada usando este panel lateral. Personaliza tu experiencia.',
-    target: '[data-tour="sidebar"]',
-    position: 'right'
-  },
-  {
-    id: 4,
-    title: 'Favoritos',
-    description: 'Agrega equipos a favoritos para acceso rápido. Aparecerán destacados en tu página principal.',
-    target: '[data-tour="favorites"]',
-    position: 'top'
-  },
-  {
-    id: 5,
-    title: 'Navegación Principal',
-    description: 'Usa estos botones para navegar entre Home, Noticias, Tabla de posiciones y Calendario.',
-    target: '[data-tour="navigation"]',
-    position: 'bottom'
-  }
-];
-
 export const OnboardingTour: React.FC<OnboardingTourProps> = ({ isOpen, onClose }) => {
-  const { } = useApp();
+  const { t } = useApp();
+
+  // Construir los pasos con el traductor actual
+  const steps = React.useMemo<TourStep[]>(() => [
+    {
+      id: 1,
+      title: t('tour_welcome_title'),
+      description: t('tour_welcome_desc'),
+      target: 'welcome',
+      position: 'bottom',
+    },
+    {
+      id: 2,
+      title: t('tour_search_title'),
+      description: t('tour_search_desc'),
+      target: '[data-tour="search"]',
+      position: 'bottom',
+    },
+    {
+      id: 3,
+      title: t('tour_filters_title'),
+      description: t('tour_filters_desc'),
+      target: '[data-tour="sidebar"]',
+      position: 'right',
+    },
+    {
+      id: 4,
+      title: t('tour_favorites_title'),
+      description: t('tour_favorites_desc'),
+      target: '[data-tour="favorites"]',
+      position: 'top',
+    },
+    {
+      id: 5,
+      title: t('tour_navigation_title'),
+      description: t('tour_navigation_desc'),
+      target: '[data-tour="navigation"]',
+      position: 'bottom',
+    },
+  ], [t]);
+
   const [currentStep, setCurrentStep] = React.useState(1);
   const [tourPosition, setTourPosition] = React.useState({ top: 0, left: 0 });
 
@@ -64,14 +66,13 @@ export const OnboardingTour: React.FC<OnboardingTourProps> = ({ isOpen, onClose 
     if (!isOpen) return;
 
     const updatePosition = () => {
-      const step = tourSteps.find(s => s.id === currentStep);
+      const step = steps.find(s => s.id === currentStep);
       if (!step) return;
 
       if (step.target === 'welcome') {
-        // Centrar en la pantalla
         setTourPosition({
           top: window.innerHeight / 2 - 150,
-          left: window.innerWidth / 2 - 200
+          left: window.innerWidth / 2 - 200,
         });
         return;
       }
@@ -104,101 +105,72 @@ export const OnboardingTour: React.FC<OnboardingTourProps> = ({ isOpen, onClose 
             break;
         }
 
-        // Ajustar si se sale de la pantalla
         if (left < 10) left = 10;
         if (left + 400 > window.innerWidth) left = window.innerWidth - 410;
         if (top < 10) top = 10;
 
         setTourPosition({ top, left });
 
-        // Highlight del elemento
         targetElement.classList.add('tour-highlight');
-        setTimeout(() => {
-          targetElement.classList.remove('tour-highlight');
-        }, 2000);
+        setTimeout(() => targetElement.classList.remove('tour-highlight'), 2000);
       }
     };
 
     updatePosition();
     window.addEventListener('resize', updatePosition);
     return () => window.removeEventListener('resize', updatePosition);
-  }, [currentStep, isOpen]);
+  }, [currentStep, isOpen, steps]);
 
   const nextStep = () => {
-    if (currentStep < tourSteps.length) {
-      setCurrentStep(currentStep + 1);
-    } else {
-      completeTour();
-    }
+    if (currentStep < steps.length) setCurrentStep(s => s + 1);
+    else completeTour();
   };
 
   const prevStep = () => {
-    if (currentStep > 1) {
-      setCurrentStep(currentStep - 1);
-    }
+    if (currentStep > 1) setCurrentStep(s => s - 1);
   };
 
-  const skipTour = () => {
-    onClose();
-  };
+  const skipTour = () => onClose();
 
   const completeTour = () => {
     localStorage.setItem('statfut-tour-completed', 'true');
     onClose();
   };
 
-  const currentStepData = tourSteps.find(s => s.id === currentStep);
+  const currentStepData = steps.find(s => s.id === currentStep);
 
   if (!isOpen || !currentStepData) return null;
 
   return (
     <>
-      {/* Overlay */}
       <div className="fixed inset-0 bg-black/50 z-50" />
-      
-      {/* Tour Card */}
-      <Card 
+      <Card
         className="fixed z-50 w-96 shadow-2xl border-2 border-primary"
-        style={{
-          top: `${tourPosition.top}px`,
-          left: `${tourPosition.left}px`,
-        }}
+        style={{ top: `${tourPosition.top}px`, left: `${tourPosition.left}px` }}
       >
         <CardContent className="p-6">
-          {/* Header */}
           <div className="flex items-center justify-between mb-4">
             <div className="flex items-center space-x-2">
               <div className="bg-primary text-primary-foreground rounded-full w-8 h-8 flex items-center justify-center text-sm font-bold">
                 {currentStep}
               </div>
               <span className="text-sm text-muted-foreground">
-                de {tourSteps.length}
+                {t('tour_of')} {steps.length}
               </span>
             </div>
-            <Button
-              variant="ghost"
-              size="sm"
-              onClick={skipTour}
-              className="h-8 w-8 p-0"
-            >
+            <Button variant="ghost" size="sm" onClick={skipTour} className="h-8 w-8 p-0">
               <X className="h-4 w-4" />
             </Button>
           </div>
 
-          {/* Content */}
           <div className="mb-6">
-            <h3 className="text-lg font-semibold mb-2">
-              {currentStepData.title}
-            </h3>
-            <p className="text-muted-foreground">
-              {currentStepData.description}
-            </p>
+            <h3 className="text-lg font-semibold mb-2">{currentStepData.title}</h3>
+            <p className="text-muted-foreground">{currentStepData.description}</p>
           </div>
 
-          {/* Progress */}
           <div className="mb-4">
             <div className="flex space-x-1">
-              {tourSteps.map((step) => (
+              {steps.map(step => (
                 <div
                   key={step.id}
                   className={`h-2 flex-1 rounded-full transition-colors ${
@@ -209,40 +181,28 @@ export const OnboardingTour: React.FC<OnboardingTourProps> = ({ isOpen, onClose 
             </div>
           </div>
 
-          {/* Actions */}
           <div className="flex items-center justify-between">
-            <Button
-              variant="outline"
-              onClick={skipTour}
-              size="sm"
-            >
-              Saltar tour
+            <Button variant="outline" onClick={skipTour} size="sm">
+              {t('tour_skip')}
             </Button>
 
             <div className="flex space-x-2">
               {currentStep > 1 && (
-                <Button
-                  variant="outline"
-                  onClick={prevStep}
-                  size="sm"
-                >
+                <Button variant="outline" onClick={prevStep} size="sm">
                   <ArrowLeft className="h-4 w-4 mr-1" />
-                  Anterior
+                  {t('tour_prev')}
                 </Button>
               )}
-              
-              <Button
-                onClick={nextStep}
-                size="sm"
-              >
-                {currentStep === tourSteps.length ? (
+
+              <Button onClick={nextStep} size="sm">
+                {currentStep === steps.length ? (
                   <>
                     <Play className="h-4 w-4 mr-1" />
-                    ¡Comenzar!
+                    {t('tour_start')}
                   </>
                 ) : (
                   <>
-                    Siguiente
+                    {t('tour_next')}
                     <ArrowRight className="h-4 w-4 ml-1" />
                   </>
                 )}
@@ -251,8 +211,6 @@ export const OnboardingTour: React.FC<OnboardingTourProps> = ({ isOpen, onClose 
           </div>
         </CardContent>
       </Card>
-
-
     </>
   );
 };

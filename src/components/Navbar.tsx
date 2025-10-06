@@ -208,17 +208,17 @@ export const Navbar: React.FC<NavbarProps> = ({
               size="icon"
               onClick={() => {
                 const notifications = [
-                  () => toast.success('¡Tu equipo ha marcado un gol! ⚽'),
-                  () => toast.info('Nueva noticia disponible'),
-                  () => toast.warning('Partido comenzando pronto'),
-                  () => toast('¡Notificación de prueba! 🎉', {
-                    description: 'Sistema funcionando correctamente'
+                  () => toast.success(t('notif_goal')),
+                  () => toast.info(t('notif_news')),
+                  () => toast.warning(t('notif_match_soon')),
+                  () => toast(t('notif_custom_title'), {
+                    description: t('notif_custom_desc')
                   })
                 ];
                 const randomNotification = notifications[Math.floor(Math.random() * notifications.length)];
                 randomNotification();
               }}
-              title="Probar notificación"
+              title={t('notifications')}
             >
               <Bell className="h-4 w-4" />
             </Button>

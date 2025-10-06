@@ -14,7 +14,7 @@ interface HomePageProps {
 }
 
 export const HomePage: React.FC<HomePageProps> = ({ onViewMatchDetail, onViewTeamDetail }) => {
-  const { selectedLeague, favorites, t } = useApp();
+  const { selectedLeague, selectedSeason, favorites, t } = useApp();
   const [showDragDrop, setShowDragDrop] = React.useState(false);
 
   // Filtrar partidos por liga seleccionada
@@ -37,7 +37,7 @@ export const HomePage: React.FC<HomePageProps> = ({ onViewMatchDetail, onViewTea
               <div>
                 <h1 className="text-3xl font-bold">{currentLeague?.name}</h1>
                 <p className="text-muted-foreground">
-                  {currentLeague?.country} • Temporada 2024/25
+                  {t('leagueSeason', { country: currentLeague?.country ?? '', season: selectedSeason })}
                 </p>
               </div>
             </div>
@@ -59,60 +59,60 @@ export const HomePage: React.FC<HomePageProps> = ({ onViewMatchDetail, onViewTea
               </div>
             ) : (
               <div className="text-center py-8 text-muted-foreground">
-                <p>No hay partidos disponibles para esta liga.</p>
+                <p>{t('noMatchesAvailable')}</p>
               </div>
             )}
           </section>
 
           {/* Prueba de Notificaciones */}
           <section>
-            <h2 className="text-2xl font-bold mb-4">Prueba las Notificaciones</h2>
+            <h2 className="text-2xl font-bold mb-4">{t('testNotifications')}</h2>
             <Card>
               <CardHeader>
                 <CardTitle className="flex items-center space-x-2">
                   <Bell className="h-5 w-5" />
-                  <span>Sistema de Notificaciones</span>
+                  <span>{t('notificationSystem')}</span>
                 </CardTitle>
               </CardHeader>
               <CardContent>
                 <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
                   <Button
                     variant="outline"
-                    onClick={() => toast.success('¡Gol de tu equipo favorito! ⚽')}
+                    onClick={() => toast.success(t('notif_goal'))}
                     className="flex flex-col items-center space-y-2 h-20"
                   >
                     <Zap className="h-5 w-5 text-green-600" />
-                    <span className="text-sm">Gol</span>
+                    <span className="text-sm">{t('goalShort')}</span>
                   </Button>
                   
                   <Button
                     variant="outline"
-                    onClick={() => toast.info('Nuevo artículo publicado en la sección de noticias')}
+                    onClick={() => toast.info(t('notif_news'))}
                     className="flex flex-col items-center space-y-2 h-20"
                   >
                     <MessageCircle className="h-5 w-5 text-blue-600" />
-                    <span className="text-sm">Noticia</span>
+                    <span className="text-sm">{t('newsShort')}</span>
                   </Button>
                   
                   <Button
                     variant="outline"
-                    onClick={() => toast.warning('Tu equipo juega en 15 minutos')}
+                    onClick={() => toast.warning(t('notif_match_soon'))}
                     className="flex flex-col items-center space-y-2 h-20"
                   >
                     <AlertTriangle className="h-5 w-5 text-orange-600" />
-                    <span className="text-sm">Recordatorio</span>
+                    <span className="text-sm">{t('reminder')}</span>
                   </Button>
                   
                   <Button
                     variant="outline"
-                    onClick={() => toast('¡Bienvenido a la aplicación! 🎉', {
-                      description: 'Explora todas las funcionalidades disponibles',
+                    onClick={() => toast(t('notif_custom_title'), {
+                      description: t('notif_custom_desc'),
                       duration: 4000
                     })}
                     className="flex flex-col items-center space-y-2 h-20"
                   >
                     <Bell className="h-5 w-5 text-purple-600" />
-                    <span className="text-sm">Personalizada</span>
+                    <span className="text-sm">{t('custom')}</span>
                   </Button>
                 </div>
               </CardContent>
@@ -130,7 +130,7 @@ export const HomePage: React.FC<HomePageProps> = ({ onViewMatchDetail, onViewTea
                   onClick={() => setShowDragDrop(true)}
                 >
                   <Settings className="h-4 w-4 mr-2" />
-                  Reordenar
+                  {t('reorder')}
                 </Button>
               )}
             </div>
@@ -157,7 +157,7 @@ export const HomePage: React.FC<HomePageProps> = ({ onViewMatchDetail, onViewTea
             ) : (
               <div className="bg-muted rounded-lg p-4">
                 <p className="text-muted-foreground text-center">
-                  Añade equipos a tus favoritos para acceso rápido
+                  {t('addTeamsToFavorites')}
                 </p>
               </div>
             )}

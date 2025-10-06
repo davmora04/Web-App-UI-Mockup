@@ -10,7 +10,7 @@ interface DragDropFavoritesProps {
 }
 
 export const DragDropFavorites: React.FC<DragDropFavoritesProps> = ({ isOpen, onClose }) => {
-  const { favorites, reorderFavorites } = useApp();
+  const { favorites, reorderFavorites, t } = useApp();
   const [draggedItem, setDraggedItem] = React.useState<Team | null>(null);
   const [dragOverIndex, setDragOverIndex] = React.useState<number | null>(null);
 
@@ -57,14 +57,14 @@ export const DragDropFavorites: React.FC<DragDropFavoritesProps> = ({ isOpen, on
     <div className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4">
       <Card className="w-full max-w-md max-h-[80vh] overflow-hidden">
         <CardHeader className="flex flex-row items-center justify-between">
-          <CardTitle>Reordenar Favoritos</CardTitle>
+          <CardTitle>{t('reorder')} {t('favorites')}</CardTitle>
           <Button variant="ghost" size="sm" onClick={onClose}>
             <X className="h-4 w-4" />
           </Button>
         </CardHeader>
         <CardContent className="space-y-2 max-h-96 overflow-y-auto">
           <p className="text-sm text-muted-foreground mb-4">
-            Arrastra y suelta para reordenar tus equipos favoritos
+            {t('dragToReorder')}
           </p>
           
           {favorites.map((team, index) => (
@@ -98,7 +98,7 @@ export const DragDropFavorites: React.FC<DragDropFavoritesProps> = ({ isOpen, on
           
           <div className="flex justify-end pt-4">
             <Button onClick={onClose}>
-              Guardar Orden
+              {t('save')}
             </Button>
           </div>
         </CardContent>

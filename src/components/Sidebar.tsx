@@ -100,7 +100,7 @@ export const Sidebar: React.FC = () => {
           {/* Current Selection Display */}
           <div className="pt-4 border-t border-sidebar-border">
             <div className="text-sm text-sidebar-foreground">
-              <p className="font-medium mb-1">Selección actual:</p>
+              <p className="font-medium mb-1">{t('currentSelection')}</p>
               <p className="text-muted-foreground">
                 {leagues.find(l => l.id === selectedLeague)?.name} - {selectedSeason}
               </p>

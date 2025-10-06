@@ -179,5 +179,102 @@ export const es = {
   september: 'Septiembre',
   october: 'Octubre',
   november: 'Noviembre',
-  december: 'Diciembre'
+  december: 'Diciembre',
+
+  newsIntro: 'Las últimas noticias del mundo del fútbol',
+  backToNews: 'Volver a noticias',
+
+  leagueSeason: '{{country}} • Temporada {{season}}',
+  currentSelection: 'Selección actual:',
+  testNotifications: 'Prueba las Notificaciones',
+  notificationSystem: 'Sistema de Notificaciones',
+  goalShort: 'Gol',
+  newsShort: 'Noticia',
+  reminder: 'Recordatorio',
+  custom: 'Personalizada',
+  reorder: 'Reordenar',
+  allTimesLocal: 'Todos los horarios se muestran en tu zona horaria local ({{tz}}).',
+
+  inDays: 'En {{n}} días',
+  daysAgoFull: 'Hace {{n}} días',
+
+  tour_skip: 'Saltar tour',
+  tour_prev: 'Anterior',
+  tour_next: 'Siguiente',
+  tour_start: '¡Comenzar!',
+  tour_of: 'de',
+  tour_welcome_title: '¡Bienvenido a StatFut! ⚽',
+  tour_welcome_desc: 'Tu nueva app de estadísticas de fútbol. Te mostraremos las funciones principales en solo 5 pasos.',
+  tour_search_title: 'Búsqueda Rápida',
+  tour_search_desc: 'Usa la barra de búsqueda para encontrar equipos, partidos y noticias. Escribe y presiona Enter.',
+  tour_filters_title: 'Panel de Filtros',
+  tour_filters_desc: 'Filtra por liga y temporada con este panel lateral.',
+  tour_favorites_title: 'Favoritos',
+  tour_favorites_desc: 'Agrega equipos a favoritos para acceso rápido en tu inicio.',
+  tour_navigation_title: 'Navegación Principal',
+  tour_navigation_desc: 'Usa estos botones para ir a Home, Noticias, Tabla y Calendario.',
+
+  championsLeague: 'Champions League',
+  europaLeague: 'Europa League',
+  relegation: 'Descenso',
+
+  notif_goal: '¡Tu equipo ha marcado un gol! ⚽',
+  notif_news: 'Nueva noticia disponible',
+  notif_match_soon: 'Partido comenzando pronto',
+  notif_custom_title: '¡Notificación de prueba! 🎉',
+  notif_custom_desc: 'Sistema funcionando correctamente',
+
+  match_status_live: 'EN VIVO',
+  match_status_finished: 'FINALIZADO',
+  match_status_scheduled: 'PROGRAMADO',
+  match_events: 'Eventos del Partido',
+  match_lineups: 'Alineaciones',
+  match_not_started: 'El partido aún no ha comenzado',
+  back: 'Volver',
+  stadium: 'Estadio',
+
+  team_summary: 'Resumen',
+  team_matches: 'Partidos',
+  team_stats: 'Estadísticas',
+  nextMatch: 'Próximo Partido',
+  thisSeason: 'Esta Temporada',
+  recentForm: 'Forma Reciente',
+  last5: 'Últimos 5',
+  wins: 'Ganados',
+  draws: 'Empatados',
+  losses: 'Perdidos',
+
+  pointsShort: 'Pts',
+  pointsFull: 'Puntos',
+
+
+  posShort: 'Pos',
+  teamShort: 'Equipo',
+  playedShort: 'PJ',
+  wonShort: 'G',
+  drawnShort: 'E',
+  lostShort: 'P',
+  goalsForShort: 'GF',
+  goalsAgainstShort: 'GC',
+  goalDifferenceShort: 'DG',
+  formShort: 'Forma',
+
+  noDataToExport: 'No hay datos para exportar',
+  csvExported: 'CSV exportado correctamente',
+
+  inFavorites: 'En Favoritos',
+
+  allMatches: 'Todos los Partidos',
+  last5Matches: 'Últimos 5 partidos',
+  noUpcomingMatches: 'No hay próximos partidos programados',
+
+  attack: 'Ataque',
+  defense: 'Defensa',
+  goalsForLong: 'Goles a favor',
+  goalsAgainstLong: 'Goles en contra',
+  avgPerGame: 'Promedio por partido',
+  goalDifferenceLong: 'Diferencia de goles',
+  teamNotFound: 'Equipo no encontrado'
+
+
 } as const;

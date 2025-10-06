@@ -11,7 +11,7 @@ interface MatchCardProps {
 }
 
 export const MatchCard: React.FC<MatchCardProps> = ({ match, onViewDetail }) => {
-  const { t } = useApp();
+  const { t, formatTime } = useApp();
 
   const getStatusBadge = () => {
     switch (match.status) {
@@ -26,56 +26,39 @@ export const MatchCard: React.FC<MatchCardProps> = ({ match, onViewDetail }) => 
     }
   };
 
-  const formatDate = (dateString: string) => {
-    const date = new Date(dateString);
-    const now = new Date();
-    const diffTime = now.getTime() - date.getTime();
-    const diffDays = Math.floor(diffTime / (1000 * 60 * 60 * 24));
+  // Usa las claves: today, yesterday, tomorrow, inDays, daysAgo
+  const formatDateBadge = (iso: string) => {
+    const d = new Date(iso);
+    const today = new Date();
 
-    if (diffDays === 0) {
-      return 'Hoy';
-    } else if (diffDays === 1) {
-      return 'Ayer';
-    } else if (diffDays === -1) {
-      return 'Mañana';
-    } else if (diffDays < 0) {
-      return `En ${Math.abs(diffDays)} días`;
-    } else {
-      return `Hace ${diffDays} días`;
-    }
+    // Normaliza a medianoche para evitar desfaces por hora/minuto
+    d.setHours(0, 0, 0, 0);
+    today.setHours(0, 0, 0, 0);
+
+    const diffDays = Math.round((d.getTime() - today.getTime()) / 86400000);
+
+    if (diffDays === 0) return t('today');
+    if (diffDays === 1) return t('tomorrow');
+    if (diffDays === -1) return t('yesterday');
+    if (diffDays > 0) return t('inDays', { n: diffDays });
+    return t('daysAgo', { n: Math.abs(diffDays) });
   };
 
-  const formatTime = (dateString: string) => {
-    return new Date(dateString).toLocaleTimeString('es-ES', {
-      hour: '2-digit',
-      minute: '2-digit'
-    });
-  };
-
-  // Determinar el resultado para cada equipo (W/D/L)
+  // Resultado W/D/L
   const getTeamResult = (isHome: boolean) => {
     if (match.status !== 'finished' || !match.score) return null;
-    
-    const homeGoals = match.score.home;
-    const awayGoals = match.score.away;
-    
-    if (homeGoals === awayGoals) return 'D';
-    if (isHome) {
-      return homeGoals > awayGoals ? 'W' : 'L';
-    } else {
-      return awayGoals > homeGoals ? 'W' : 'L';
-    }
+    const { home, away } = match.score;
+    if (home === away) return 'D';
+    return isHome ? (home > away ? 'W' : 'L') : (away > home ? 'W' : 'L');
   };
 
   const getResultChip = (result: 'W' | 'D' | 'L' | null) => {
     if (!result) return null;
-    
     const colors = {
       W: 'bg-green-500 text-white',
       D: 'bg-yellow-500 text-white',
-      L: 'bg-red-500 text-white'
-    };
-
+      L: 'bg-red-500 text-white',
+    } as const;
     return (
       <div className={`w-6 h-6 rounded-full flex items-center justify-center text-xs font-bold ${colors[result]}`}>
         {result}
@@ -89,7 +72,7 @@ export const MatchCard: React.FC<MatchCardProps> = ({ match, onViewDetail }) => 
         <div className="flex items-center justify-between mb-3">
           <div className="flex items-center space-x-2 text-sm text-muted-foreground">
             <Calendar className="h-4 w-4" />
-            <span>{formatDate(match.date)}</span>
+            <span>{formatDateBadge(match.date)}</span>
             <Clock className="h-4 w-4 ml-2" />
             <span>{formatTime(match.date)}</span>
           </div>
@@ -97,14 +80,14 @@ export const MatchCard: React.FC<MatchCardProps> = ({ match, onViewDetail }) => 
         </div>
 
         <div className="flex items-center justify-between mb-4">
-          {/* Equipo Local */}
+          {/* Local */}
           <div className="flex items-center space-x-3 flex-1">
             <div className="flex items-center space-x-2">
               <span className="text-2xl">{match.homeTeam.logo}</span>
               <div>
                 <p className="font-medium">{match.homeTeam.name}</p>
                 <Badge variant="outline" className="text-xs">
-                  {t('home')}
+                  {t('homeTeam')} {/* asegúrate de tener esta clave */}
                 </Badge>
               </div>
             </div>
@@ -131,7 +114,7 @@ export const MatchCard: React.FC<MatchCardProps> = ({ match, onViewDetail }) => 
             )}
           </div>
 
-          {/* Equipo Visitante */}
+          {/* Visitante */}
           <div className="flex items-center space-x-3 flex-1 justify-end">
             {getResultChip(getTeamResult(false))}
             <div className="flex items-center space-x-2">
@@ -147,11 +130,7 @@ export const MatchCard: React.FC<MatchCardProps> = ({ match, onViewDetail }) => 
         </div>
 
         <div className="flex justify-center">
-          <Button
-            onClick={() => onViewDetail?.(match.id)}
-            variant="outline"
-            size="sm"
-          >
+          <Button onClick={() => onViewDetail?.(match.id)} variant="outline" size="sm">
             {t('viewDetail')}
           </Button>
         </div>
