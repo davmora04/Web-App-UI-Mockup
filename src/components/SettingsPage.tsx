@@ -30,24 +30,24 @@ export const SettingsPage: React.FC = () => {
   });
 
   const handleSaveSettings = () => {
-    // Aplicar tamaño de texto
+    // Apply text size
     document.documentElement.style.setProperty('--font-size', `${textSize}px`);
     
-    // Aplicar alto contraste
+    // High contrast
     if (highContrast) {
       document.documentElement.classList.add('high-contrast');
     } else {
       document.documentElement.classList.remove('high-contrast');
     }
 
-    // Aplicar movimiento reducido
+    // Reduced motion
     if (reducedMotion) {
       document.documentElement.classList.add('reduce-motion');
     } else {
       document.documentElement.classList.remove('reduce-motion');
     }
 
-    toast.success('Configuración guardada correctamente');
+    toast.success(t('settingsSaved'));
   };
 
   const resetToDefaults = () => {
@@ -55,7 +55,7 @@ export const SettingsPage: React.FC = () => {
     setHighContrast(false);
     setReducedMotion(false);
     setTheme('dark');
-    setLanguage('es');
+    setLanguage('en');
     setNotifications({
       matchAlerts: true,
       newsUpdates: false,
@@ -69,13 +69,11 @@ export const SettingsPage: React.FC = () => {
       end: '08:00'
     });
     
-    toast.success('Configuración restaurada a valores por defecto');
+    toast.success(t('resetDefaults'));
   };
 
   const getPreviewText = () => {
-    return theme === 'dark' 
-      ? 'Vista previa en modo oscuro' 
-      : 'Vista previa en modo claro';
+    return `${t('preview')} - ${theme === 'dark' ? t('dark') : t('light')}`;
   };
 
   return (
@@ -85,14 +83,12 @@ export const SettingsPage: React.FC = () => {
         <Settings className="h-8 w-8 text-primary" />
         <div>
           <h1 className="text-3xl font-bold">{t('settings')}</h1>
-          <p className="text-muted-foreground">
-            Personaliza tu experiencia en la aplicación
-          </p>
+          <p className="text-muted-foreground">{t('settings_intro')}</p>
         </div>
       </div>
 
       <div className="grid gap-6 md:grid-cols-2">
-        {/* Configuración de Accesibilidad */}
+        {/* Accessibility */}
         <Card>
           <CardHeader>
             <CardTitle className="flex items-center space-x-2">
@@ -101,7 +97,7 @@ export const SettingsPage: React.FC = () => {
             </CardTitle>
           </CardHeader>
           <CardContent className="space-y-6">
-            {/* Tamaño de texto */}
+            {/* Text size */}
             <div className="space-y-2">
               <Label className="flex items-center space-x-2">
                 <Type className="h-4 w-4" />
@@ -122,29 +118,23 @@ export const SettingsPage: React.FC = () => {
 
             <Separator />
 
-            {/* Alto contraste */}
+            {/* High contrast */}
             <div className="flex items-center justify-between">
               <div className="space-y-0.5">
-                <Label>Alto contraste</Label>
-                <p className="text-sm text-muted-foreground">
-                  Mejora la legibilidad con mayor contraste
-                </p>
+                <Label>{t('highContrastTitle')}</Label>
+                <p className="text-sm text-muted-foreground">{t('highContrastDesc')}</p>
               </div>
               <Switch
                 checked={highContrast}
-                onCheckedChange={(checked: boolean) =>
-                  setHighContrast(checked)
-                }
+                onCheckedChange={(checked: boolean) => setHighContrast(checked)}
               />
             </div>
 
-            {/* Movimiento reducido */}
+            {/* Reduced motion */}
             <div className="flex items-center justify-between">
               <div className="space-y-0.5">
-                <Label>Reducir animaciones</Label>
-                <p className="text-sm text-muted-foreground">
-                  Minimiza las animaciones en la interfaz
-                </p>
+                <Label>{t('reduceMotionTitle')}</Label>
+                <p className="text-sm text-muted-foreground">{t('reduceMotionDesc')}</p>
               </div>
               <Switch
                 checked={reducedMotion}
@@ -154,18 +144,18 @@ export const SettingsPage: React.FC = () => {
           </CardContent>
         </Card>
 
-        {/* Configuración de Apariencia */}
+        {/* Appearance */}
         <Card>
           <CardHeader>
             <CardTitle className="flex items-center space-x-2">
               <Palette className="h-5 w-5" />
-              <span>Apariencia</span>
+              <span>{t('appearance')}</span>
             </CardTitle>
           </CardHeader>
           <CardContent className="space-y-6">
-            {/* Tema */}
+            {/* Theme */}
             <div className="space-y-2">
-              <Label>Tema</Label>
+              <Label>{t('themeLabel')}</Label>
               <div className="flex space-x-2">
                 <Button
                   variant={theme === 'light' ? 'default' : 'outline'}
@@ -173,7 +163,7 @@ export const SettingsPage: React.FC = () => {
                   className="flex-1"
                 >
                   <Sun className="h-4 w-4 mr-2" />
-                  Claro
+                  {t('light')}
                 </Button>
                 <Button
                   variant={theme === 'dark' ? 'default' : 'outline'}
@@ -181,40 +171,40 @@ export const SettingsPage: React.FC = () => {
                   className="flex-1"
                 >
                   <Moon className="h-4 w-4 mr-2" />
-                  Oscuro
+                  {t('dark')}
                 </Button>
               </div>
             </div>
 
             <Separator />
 
-            {/* Idioma */}
+            {/* Language */}
             <div className="space-y-2">
-              <Label>Idioma</Label>
+              <Label>{t('languageLabel')}</Label>
               <Select value={language} onValueChange={(value: 'es' | 'en') => setLanguage(value)}>
                 <SelectTrigger>
                   <SelectValue />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="es">Español</SelectItem>
                   <SelectItem value="en">English</SelectItem>
+                  <SelectItem value="es">Español</SelectItem>
                 </SelectContent>
               </Select>
             </div>
 
-            {/* Vista previa */}
+            {/* Preview */}
             <div className="p-4 bg-muted rounded-lg">
-              <p className="text-sm">Vista previa:</p>
+              <p className="text-sm">{t('preview')}:</p>
               <div className="mt-2 p-2 bg-card rounded border">
                 <p style={{ fontSize: `${textSize}px` }}>
-                  Real Madrid vs Barcelona - {theme === 'dark' ? 'Modo oscuro' : 'Modo claro'}
+                  Real Madrid vs Barcelona - {theme === 'dark' ? `${t('dark')} mode` : `${t('light')} mode`}
                 </p>
               </div>
             </div>
           </CardContent>
         </Card>
 
-        {/* Configuración de Notificaciones */}
+        {/* Notifications (in-app) */}
         <Card>
           <CardHeader>
             <CardTitle className="flex items-center space-x-2">
@@ -223,32 +213,27 @@ export const SettingsPage: React.FC = () => {
             </CardTitle>
           </CardHeader>
           <CardContent className="space-y-6">
-            {/* Sonido */}
+            {/* Sound */}
             <div className="flex items-center justify-between">
               <div className="space-y-0.5 flex items-center space-x-2">
                 <Volume2 className="h-4 w-4" />
-                <Label>Sonidos de notificación</Label>
+                <Label>{t('notificationSounds')}</Label>
               </div>
-              <Switch
-                checked={soundEnabled}
-                onCheckedChange={setSoundEnabled}
-              />
+              <Switch checked={soundEnabled} onCheckedChange={setSoundEnabled} />
             </div>
 
             <Separator />
 
-            {/* Tipos de notificaciones */}
+            {/* Types */}
             <div className="space-y-4">
               <div className="flex items-center justify-between">
                 <div className="space-y-0.5">
-                  <Label>Alertas de partidos</Label>
-                  <p className="text-sm text-muted-foreground">
-                    Goles, tarjetas y eventos importantes
-                  </p>
+                  <Label>{t('matchAlertsTitle')}</Label>
+                  <p className="text-sm text-muted-foreground">{t('matchAlertsDesc')}</p>
                 </div>
                 <Switch
                   checked={notifications.matchAlerts}
-                  onCheckedChange={(checked: boolean) => 
+                  onCheckedChange={(checked: boolean) =>
                     setNotifications(prev => ({ ...prev, matchAlerts: checked }))
                   }
                 />
@@ -256,14 +241,12 @@ export const SettingsPage: React.FC = () => {
 
               <div className="flex items-center justify-between">
                 <div className="space-y-0.5">
-                  <Label>Equipos favoritos</Label>
-                  <p className="text-sm text-muted-foreground">
-                    Noticias y partidos de tus equipos
-                  </p>
+                  <Label>{t('favoriteTeamsTitle')}</Label>
+                  <p className="text-sm text-muted-foreground">{t('favoriteTeamsDesc')}</p>
                 </div>
                 <Switch
                   checked={notifications.favoriteTeams}
-                  onCheckedChange={(checked: boolean) => 
+                  onCheckedChange={(checked: boolean) =>
                     setNotifications(prev => ({ ...prev, favoriteTeams: checked }))
                   }
                 />
@@ -271,14 +254,12 @@ export const SettingsPage: React.FC = () => {
 
               <div className="flex items-center justify-between">
                 <div className="space-y-0.5">
-                  <Label>Últimas noticias</Label>
-                  <p className="text-sm text-muted-foreground">
-                    Noticias destacadas del fútbol
-                  </p>
+                  <Label>{t('topNewsTitle')}</Label>
+                  <p className="text-sm text-muted-foreground">{t('topNewsDesc')}</p>
                 </div>
                 <Switch
                   checked={notifications.newsUpdates}
-                  onCheckedChange={(checked: boolean) => 
+                  onCheckedChange={(checked: boolean) =>
                     setNotifications(prev => ({ ...prev, newsUpdates: checked }))
                   }
                 />
@@ -286,14 +267,12 @@ export const SettingsPage: React.FC = () => {
 
               <div className="flex items-center justify-between">
                 <div className="space-y-0.5">
-                  <Label>Resumen semanal</Label>
-                  <p className="text-sm text-muted-foreground">
-                    Resumen de la semana en tu email
-                  </p>
+                  <Label>{t('weeklySummaryTitle')}</Label>
+                  <p className="text-sm text-muted-foreground">{t('weeklySummaryDesc')}</p>
                 </div>
                 <Switch
                   checked={notifications.weeklyDigest}
-                  onCheckedChange={(checked) => 
+                  onCheckedChange={(checked) =>
                     setNotifications(prev => ({ ...prev, weeklyDigest: checked }))
                   }
                 />
@@ -301,44 +280,43 @@ export const SettingsPage: React.FC = () => {
 
               <Separator />
 
-              {/* Configuración de Horario Silencioso */}
+              {/* Quiet hours inside notifications block */}
               <div className="space-y-4">
                 <div className="flex items-center justify-between">
                   <div className="space-y-0.5">
-                    <Label>Horario silencioso</Label>
-                    <p className="text-sm text-muted-foreground">
-                      Silenciar notificaciones durante ciertas horas
-                    </p>
+                    <Label>{t('quietHoursTitle')}</Label>
+                    <p className="text-sm text-muted-foreground">{t('quietHoursDesc')}</p>
                   </div>
                   <Switch
                     checked={quietHours.enabled}
-                    onCheckedChange={(checked) => 
+                    onCheckedChange={(checked) =>
                       setQuietHours(prev => ({ ...prev, enabled: checked }))
                     }
+                    aria-label={t('enableQuietHours')}
                   />
                 </div>
 
                 {quietHours.enabled && (
                   <div className="grid grid-cols-2 gap-4 pl-4 border-l-2 border-muted">
                     <div className="space-y-2">
-                      <Label htmlFor="quiet-start">Inicio</Label>
+                      <Label htmlFor="quiet-start">Start</Label>
                       <input
                         id="quiet-start"
                         type="time"
                         value={quietHours.start}
-                        onChange={(e) => 
+                        onChange={(e) =>
                           setQuietHours(prev => ({ ...prev, start: e.target.value }))
                         }
                         className="w-full px-3 py-2 border border-input bg-background rounded-md text-sm"
                       />
                     </div>
                     <div className="space-y-2">
-                      <Label htmlFor="quiet-end">Fin</Label>
+                      <Label htmlFor="quiet-end">End</Label>
                       <input
                         id="quiet-end"
                         type="time"
                         value={quietHours.end}
-                        onChange={(e) => 
+                        onChange={(e) =>
                           setQuietHours(prev => ({ ...prev, end: e.target.value }))
                         }
                         className="w-full px-3 py-2 border border-input bg-background rounded-md text-sm"
@@ -351,96 +329,89 @@ export const SettingsPage: React.FC = () => {
           </CardContent>
         </Card>
 
-        {/* Configuración de Email */}
+        {/* Email notifications */}
         <Card>
           <CardHeader>
             <CardTitle className="flex items-center space-x-2">
               <Bell className="h-5 w-5" />
-              <span>Notificaciones por Email</span>
+              <span>{t('emailNotificationsTitle')}</span>
             </CardTitle>
-            <p className="text-sm text-muted-foreground">
-              Configura las notificaciones que quieres recibir por email
-            </p>
           </CardHeader>
           <CardContent className="space-y-4">
             <div className="space-y-2">
-              <Label htmlFor="email">Dirección de email</Label>
+              <Label htmlFor="email">{t('emailAddressLabel')}</Label>
               <input
                 id="email"
                 type="email"
-                placeholder="tu@email.com"
+                placeholder="you@email.com"
                 className="w-full px-3 py-2 border border-input bg-background rounded-md text-sm"
               />
-              <p className="text-xs text-muted-foreground">
-                Solo se usará para enviar notificaciones de la app
-              </p>
+              <p className="text-xs text-muted-foreground">{t('emailUsageNote')}</p>
             </div>
 
             <div className="space-y-2">
-              <Label>Frecuencia de emails</Label>
+              <Label>{t('emailFrequencyLabel')}</Label>
               <Select defaultValue="weekly">
                 <SelectTrigger>
                   <SelectValue />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="instant">Inmediata</SelectItem>
-                  <SelectItem value="daily">Diaria</SelectItem>
-                  <SelectItem value="weekly">Semanal</SelectItem>
-                  <SelectItem value="never">Nunca</SelectItem>
+                  <SelectItem value="instant">Instant</SelectItem>
+                  <SelectItem value="daily">Daily</SelectItem>
+                  <SelectItem value="weekly">Weekly</SelectItem>
+                  <SelectItem value="never">Never</SelectItem>
                 </SelectContent>
               </Select>
             </div>
 
             <Button variant="outline" className="w-full">
-              Probar Email de Notificación
+              {t('sendTestEmail')}
             </Button>
           </CardContent>
         </Card>
 
-        {/* Prueba de Notificaciones */}
+        {/* Try notifications */}
         <Card>
           <CardHeader>
-            <CardTitle>Probar Notificaciones</CardTitle>
-            <p className="text-sm text-muted-foreground">
-              Prueba los diferentes tipos de notificaciones para ver cómo se ven
-            </p>
+            <CardTitle>{t('testNotifications')}</CardTitle>
+            <p className="text-sm text-muted-foreground">{t('notificationSystem')}</p>
           </CardHeader>
           <CardContent className="space-y-4">
             <div className="grid grid-cols-2 gap-4">
               <Button
                 variant="outline"
-                onClick={() => toast.success('¡Partido ganado! Real Madrid 2-1 Barcelona')}
+                onClick={() => toast.success(t('resultTitle'))}
                 className="h-auto p-4 text-left flex flex-col items-start space-y-1"
               >
-                <span className="font-medium text-green-600">Éxito</span>
-                <span className="text-sm text-muted-foreground">Resultado de partido</span>
+                <span className="font-medium text-green-600">{t('successLabel')}</span>
+                <span className="text-sm text-muted-foreground">{t('resultTitle')}</span>
               </Button>
               
               <Button
                 variant="outline"
-                onClick={() => toast.info('Nuevo artículo: "Fichajes de invierno 2024"')}
+                onClick={() => toast.info(t('newNewsTitle'))}
                 className="h-auto p-4 text-left flex flex-col items-start space-y-1"
               >
-                <span className="font-medium text-blue-600">Información</span>
-                <span className="text-sm text-muted-foreground">Noticia nueva</span>
+                <span className="font-medium text-blue-600">{t('infoLabel')}</span>
+                <span className="text-sm text-muted-foreground">{t('newNewsTitle')}</span>
               </Button>
               
               <Button
                 variant="outline"
-                onClick={() => toast.warning('Tu equipo favorito juega en 30 minutos')}
+                onClick={() => toast.warning(t('reminderTitle'))}
                 className="h-auto p-4 text-left flex flex-col items-start space-y-1"
               >
-                <span className="font-medium text-orange-600">Aviso</span>
-                <span className="text-sm text-muted-foreground">Recordatorio</span>
+                <span className="font-medium text-orange-600">{t('warningLabel')}</span>
+                <span className="text-sm text-muted-foreground">{t('reminderTitle')}</span>
               </Button>
               
               <Button
                 variant="outline"
-                onClick={() => toast.error('Error al cargar los datos del partido')}
+                onClick={() => toast.error(t('connectionFailTitle'))}
                 className="h-auto p-4 text-left flex flex-col items-start space-y-1"
               >
-                <span className="font-medium text-red-600">Error</span>
-                <span className="text-sm text-muted-foreground">Fallo en la conexión</span>
+                <span className="font-medium text-red-600">{t('errorLabel')}</span>
+                <span className="text-sm text-muted-foreground">{t('connectionFailTitle')}</span>
               </Button>
             </div>
             
@@ -449,51 +420,55 @@ export const SettingsPage: React.FC = () => {
             <div className="space-y-2">
               <Button
                 variant="default"
-                onClick={() => toast('Notificación personalizada con acciones', {
-                  description: 'Esta notificación incluye botones de acción',
-                  action: {
-                    label: 'Ver más',
-                    onClick: () => toast.success('¡Acción ejecutada!')
-                  },
-                  cancel: {
-                    label: 'Cerrar',
-                    onClick: () => {}
-                  }
-                })}
+                onClick={() =>
+                  toast(t('notif_custom_title'), {
+                    description: t('notif_custom_desc'),
+                    action: {
+                      label: t('readMore'),
+                      onClick: () => toast.success(t('success'))
+                    },
+                    cancel: {
+                      label: t('close'),
+                      onClick: () => {}
+                    }
+                  })
+                }
                 className="w-full"
               >
-                Notificación con Acciones
+                {t('withActions')}
               </Button>
               
               <Button
                 variant="secondary"
-                onClick={() => toast.promise(
-                  new Promise((resolve) => setTimeout(resolve, 2000)),
-                  {
-                    loading: 'Cargando datos del partido...',
-                    success: 'Datos cargados correctamente',
-                    error: 'Error al cargar los datos'
-                  }
-                )}
+                onClick={() =>
+                  toast.promise(
+                    new Promise((resolve) => setTimeout(resolve, 2000)),
+                    {
+                      loading: t('loading'),
+                      success: t('success'),
+                      error: t('error')
+                    }
+                  )
+                }
                 className="w-full"
               >
-                Notificación de Carga
+                {t('loadingNotification')}
               </Button>
             </div>
           </CardContent>
         </Card>
 
-        {/* Horario Silencioso */}
+        {/* Quiet hours (standalone card) */}
         <Card>
           <CardHeader>
-            <CardTitle>Horario silencioso</CardTitle>
+            <CardTitle>{t('quietHoursTitle')}</CardTitle>
           </CardHeader>
           <CardContent className="space-y-4">
             <div className="flex items-center justify-between">
-              <Label>Activar horario silencioso</Label>
+              <Label>{t('enableQuietHours')}</Label>
               <Switch
                 checked={quietHours.enabled}
-                onCheckedChange={(checked) => 
+                onCheckedChange={(checked) =>
                   setQuietHours(prev => ({ ...prev, enabled: checked }))
                 }
               />
@@ -503,10 +478,10 @@ export const SettingsPage: React.FC = () => {
               <div className="space-y-4">
                 <div className="grid grid-cols-2 gap-4">
                   <div className="space-y-2">
-                    <Label>Inicio</Label>
-                    <Select 
-                      value={quietHours.start} 
-                      onValueChange={(value) => 
+                    <Label>Start</Label>
+                    <Select
+                      value={quietHours.start}
+                      onValueChange={(value) =>
                         setQuietHours(prev => ({ ...prev, start: value }))
                       }
                     >
@@ -527,10 +502,10 @@ export const SettingsPage: React.FC = () => {
                   </div>
 
                   <div className="space-y-2">
-                    <Label>Fin</Label>
-                    <Select 
-                      value={quietHours.end} 
-                      onValueChange={(value) => 
+                    <Label>End</Label>
+                    <Select
+                      value={quietHours.end}
+                      onValueChange={(value) =>
                         setQuietHours(prev => ({ ...prev, end: value }))
                       }
                     >
@@ -552,7 +527,7 @@ export const SettingsPage: React.FC = () => {
                 </div>
 
                 <p className="text-sm text-muted-foreground">
-                  No recibirás notificaciones entre {quietHours.start} y {quietHours.end}
+                  You won’t receive notifications between {quietHours.start} and {quietHours.end}
                 </p>
               </div>
             )}
@@ -560,13 +535,13 @@ export const SettingsPage: React.FC = () => {
         </Card>
       </div>
 
-      {/* Botones de acción */}
+      {/* Footer actions */}
       <div className="flex justify-between">
         <Button variant="outline" onClick={resetToDefaults}>
-          Restaurar valores por defecto
+          {t('resetDefaults')}
         </Button>
         <Button onClick={handleSaveSettings}>
-          Guardar cambios
+          {t('saveChangesBtn')}
         </Button>
       </div>
     </div>

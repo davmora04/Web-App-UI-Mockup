@@ -8,11 +8,10 @@ import { useApp, Team } from './AppContext';
 import { toast } from 'sonner';
 
 export const ProfilePage: React.FC = () => {
-  const { favorites, removeFromFavorites, t } = useApp();
+  const { favorites, removeFromFavorites, t, language } = useApp();
   const [draggedItem, setDraggedItem] = React.useState<string | null>(null);
   const [orderedFavorites, setOrderedFavorites] = React.useState<Team[]>(favorites);
 
-  // Actualizar cuando cambian los favoritos
   React.useEffect(() => {
     setOrderedFavorites(favorites);
   }, [favorites]);
@@ -33,7 +32,7 @@ export const ProfilePage: React.FC = () => {
 
   const handleDrop = (e: React.DragEvent, targetTeamId: string) => {
     e.preventDefault();
-    
+
     if (!draggedItem || draggedItem === targetTeamId) {
       setDraggedItem(null);
       return;
@@ -47,7 +46,7 @@ export const ProfilePage: React.FC = () => {
       const [draggedTeam] = newOrder.splice(draggedIndex, 1);
       newOrder.splice(targetIndex, 0, draggedTeam);
       setOrderedFavorites(newOrder);
-      toast.success('Orden de favoritos actualizado');
+      toast.success('Favorites order updated');
     }
 
     setDraggedItem(null);
@@ -55,12 +54,17 @@ export const ProfilePage: React.FC = () => {
 
   const handleRemoveFavorite = (teamId: string) => {
     removeFromFavorites(teamId);
-    toast.success('Equipo eliminado de favoritos');
+    toast.success(t('teamRemovedFromFavorites'));
   };
 
   const handleDragEnd = () => {
     setDraggedItem(null);
   };
+
+  // Mock de fecha de registro
+  const locale = language === 'es' ? 'es-ES' : 'en-US';
+  const joinedAt = new Date(2025, 0, 1);
+  const joinedStr = joinedAt.toLocaleDateString(locale, { month: 'long', year: 'numeric' });
 
   return (
     <div className="max-w-4xl mx-auto p-6 space-y-6">
@@ -70,18 +74,18 @@ export const ProfilePage: React.FC = () => {
         <div>
           <h1 className="text-3xl font-bold">{t('profile')}</h1>
           <p className="text-muted-foreground">
-            Gestiona tus equipos favoritos y preferencias
+            Manage your favorite teams and preferences
           </p>
         </div>
       </div>
 
       <div className="grid lg:grid-cols-3 gap-6">
-        {/* Información del perfil */}
+        {/* Profile info */}
         <Card className="lg:col-span-1">
           <CardHeader>
             <CardTitle className="flex items-center space-x-2">
               <User className="h-5 w-5" />
-              <span>Mi Perfil</span>
+              <span>{t('myProfile')}</span>
             </CardTitle>
           </CardHeader>
           <CardContent className="space-y-4">
@@ -90,36 +94,36 @@ export const ProfilePage: React.FC = () => {
                 <User className="h-10 w-10 text-primary-foreground" />
               </div>
               <div className="text-center">
-                <h3 className="font-semibold">Usuario de StatFut</h3>
+                <h3 className="font-semibold">StatFut User</h3>
                 <p className="text-sm text-muted-foreground">
-                  Miembro desde enero 2025
+                  {t('memberSinceOn')} {joinedStr}
                 </p>
               </div>
             </div>
 
             <div className="space-y-2">
               <div className="flex justify-between">
-                <span className="text-sm">Equipos favoritos</span>
+                <span className="text-sm">{t('favoriteTeams')}</span>
                 <Badge variant="secondary">{favorites.length}</Badge>
               </div>
               <div className="flex justify-between">
-                <span className="text-sm">Noticias leídas</span>
+                <span className="text-sm">{t('newsRead')}</span>
                 <Badge variant="secondary">12</Badge>
               </div>
               <div className="flex justify-between">
-                <span className="text-sm">Partidos seguidos</span>
+                <span className="text-sm">{t('matchesWatched')}</span>
                 <Badge variant="secondary">8</Badge>
               </div>
             </div>
 
             <Button variant="outline" className="w-full">
               <Settings className="h-4 w-4 mr-2" />
-              Editar Perfil
+              {t('editProfile')}
             </Button>
           </CardContent>
         </Card>
 
-        {/* Equipos favoritos */}
+        {/* Favorites */}
         <Card className="lg:col-span-2">
           <CardHeader>
             <CardTitle className="flex items-center space-x-2">
@@ -132,9 +136,7 @@ export const ProfilePage: React.FC = () => {
               <div className="space-y-3">
                 <Alert>
                   <Star className="h-4 w-4" />
-                  <AlertDescription>
-                    Arrastra los equipos para reordenar tus favoritos. El orden determina la prioridad de las notificaciones.
-                  </AlertDescription>
+                  <AlertDescription>{t('dragToReorder')}</AlertDescription>
                 </Alert>
 
                 <div className="space-y-2">
@@ -161,16 +163,16 @@ export const ProfilePage: React.FC = () => {
                         <div>
                           <h3 className="font-medium">{team.name}</h3>
                           <div className="flex items-center space-x-2 text-sm text-muted-foreground">
-                            <span>Posición: #{team.position}</span>
+                            <span>{t('position')}: #{team.position}</span>
                             <Badge variant="outline" className="text-xs">
-                              {team.points} pts
+                              {team.points} {t('pointsShort')}
                             </Badge>
                           </div>
                         </div>
                       </div>
 
                       <div className="flex items-center space-x-2">
-                        {/* Forma reciente */}
+                        {/* Recent form */}
                         <div className="flex space-x-1">
                           {team.form?.slice(-3).map((result, idx) => {
                             const colors = {
@@ -178,7 +180,6 @@ export const ProfilePage: React.FC = () => {
                               D: 'bg-yellow-500 text-white',
                               L: 'bg-red-500 text-white'
                             };
-                            
                             return (
                               <div
                                 key={idx}
@@ -204,9 +205,9 @@ export const ProfilePage: React.FC = () => {
                 </div>
 
                 <div className="mt-4 p-3 bg-card border rounded-lg">
-                  <h4 className="font-medium mb-2">Acceso Rápido</h4>
+                  <h4 className="font-medium mb-2">{t('quickAccess')}</h4>
                   <p className="text-sm text-muted-foreground mb-3">
-                    Estos equipos aparecerán en tu página de inicio para acceso rápido:
+                    {t('quickAccessDescription')}
                   </p>
                   <div className="flex flex-wrap gap-2">
                     {orderedFavorites.slice(0, 3).map(team => (
@@ -221,13 +222,13 @@ export const ProfilePage: React.FC = () => {
             ) : (
               <div className="text-center py-8">
                 <Heart className="h-12 w-12 text-muted-foreground mx-auto mb-4" />
-                <h3 className="font-medium mb-2">No tienes equipos favoritos</h3>
+                <h3 className="font-medium mb-2">You don’t have favorite teams</h3>
                 <p className="text-sm text-muted-foreground mb-4">
-                  Añade equipos a tus favoritos desde las páginas de equipos o partidos
+                  Add teams to your favorites from team or match pages.
                 </p>
                 <Button variant="outline">
                   <Star className="h-4 w-4 mr-2" />
-                  Explorar Equipos
+                  Browse Teams
                 </Button>
               </div>
             )}
@@ -235,22 +236,22 @@ export const ProfilePage: React.FC = () => {
         </Card>
       </div>
 
-      {/* Configuración rápida */}
+      {/* Quick Settings */}
       <Card>
         <CardHeader>
-          <CardTitle>Configuración Rápida</CardTitle>
+          <CardTitle>{t('quickSettings')}</CardTitle>
         </CardHeader>
         <CardContent>
           <div className="grid md:grid-cols-3 gap-4">
             <Card className="border-2 border-dashed">
               <CardContent className="p-4 text-center">
                 <Star className="h-8 w-8 text-primary mx-auto mb-2" />
-                <h4 className="font-medium mb-1">Notificaciones</h4>
+                <h4 className="font-medium mb-1">{t('notifications')}</h4>
                 <p className="text-sm text-muted-foreground mb-3">
-                  Recibe alertas de tus equipos favoritos
+                  Receive alerts for your favorite teams
                 </p>
                 <Button size="sm" variant="outline">
-                  Configurar
+                  {t('configure')}
                 </Button>
               </CardContent>
             </Card>
@@ -258,12 +259,12 @@ export const ProfilePage: React.FC = () => {
             <Card className="border-2 border-dashed">
               <CardContent className="p-4 text-center">
                 <Settings className="h-8 w-8 text-primary mx-auto mb-2" />
-                <h4 className="font-medium mb-1">Privacidad</h4>
+                <h4 className="font-medium mb-1">{t('privacy')}</h4>
                 <p className="text-sm text-muted-foreground mb-3">
-                  Gestiona tu privacidad y datos
+                  Manage your privacy and data
                 </p>
                 <Button size="sm" variant="outline">
-                  Revisar
+                  {t('review')}
                 </Button>
               </CardContent>
             </Card>
@@ -271,12 +272,12 @@ export const ProfilePage: React.FC = () => {
             <Card className="border-2 border-dashed">
               <CardContent className="p-4 text-center">
                 <User className="h-8 w-8 text-primary mx-auto mb-2" />
-                <h4 className="font-medium mb-1">Cuenta</h4>
+                <h4 className="font-medium mb-1">{t('account')}</h4>
                 <p className="text-sm text-muted-foreground mb-3">
-                  Actualiza tu información personal
+                  Update your personal information
                 </p>
                 <Button size="sm" variant="outline">
-                  Editar
+                  {t('edit')}
                 </Button>
               </CardContent>
             </Card>

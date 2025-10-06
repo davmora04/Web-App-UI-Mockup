@@ -13,7 +13,7 @@ export const AuthPage: React.FC = () => {
   const [mode, setMode] = React.useState<'signin' | 'signup'>('signin');
   const [showPassword, setShowPassword] = React.useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = React.useState(false);
-  
+
   const [formData, setFormData] = React.useState({
     name: '',
     email: '',
@@ -21,7 +21,7 @@ export const AuthPage: React.FC = () => {
     confirmPassword: '',
     favoriteTeam: ''
   });
-  
+
   const [errors, setErrors] = React.useState<Record<string, string>>({});
   const [isLoading, setIsLoading] = React.useState(false);
 
@@ -37,31 +37,31 @@ export const AuthPage: React.FC = () => {
   const validateForm = () => {
     const newErrors: Record<string, string> = {};
 
-    // Validación de nombre (solo para registro)
+    // Nombre
     if (mode === 'signup' && !formData.name.trim()) {
-      newErrors.name = 'El nombre es requerido';
+      newErrors.name = t('required');
     }
 
-    // Validación de email
+    // Email
     if (!formData.email.trim()) {
-      newErrors.email = 'El email es requerido';
+      newErrors.email = t('required');
     } else if (!validateEmail(formData.email)) {
-      newErrors.email = 'El email no es válido';
+      newErrors.email = t('invalidEmail');
     }
 
-    // Validación de contraseña
+    // Password
     if (!formData.password) {
-      newErrors.password = 'La contraseña es requerida';
+      newErrors.password = t('required');
     } else if (!validatePassword(formData.password)) {
-      newErrors.password = 'La contraseña debe tener al menos 8 caracteres';
+      newErrors.password = t('passwordTooShort');
     }
 
-    // Validación de confirmación de contraseña (solo para registro)
+    // Confirm password
     if (mode === 'signup') {
       if (!formData.confirmPassword) {
-        newErrors.confirmPassword = 'Confirma tu contraseña';
+        newErrors.confirmPassword = t('required');
       } else if (formData.password !== formData.confirmPassword) {
-        newErrors.confirmPassword = 'Las contraseñas no coinciden';
+        newErrors.confirmPassword = t('passwordsDoNotMatch');
       }
     }
 
@@ -71,24 +71,20 @@ export const AuthPage: React.FC = () => {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    
-    if (!validateForm()) {
-      return;
-    }
+
+    if (!validateForm()) return;
 
     setIsLoading(true);
 
-    // Simulación de llamada a API
     try {
       await new Promise(resolve => setTimeout(resolve, 1500));
-      
+
       if (mode === 'signin') {
-        toast.success('Sesión iniciada correctamente');
+        toast.success(`${t('signIn')} ${t('success')}`);
       } else {
-        toast.success('Cuenta creada correctamente');
+        toast.success(`${t('signUp')} ${t('success')}`);
       }
-      
-      // Limpiar formulario
+
       setFormData({
         name: '',
         email: '',
@@ -96,9 +92,8 @@ export const AuthPage: React.FC = () => {
         confirmPassword: '',
         favoriteTeam: ''
       });
-      
-    } catch (error) {
-      toast.error('Ha ocurrido un error. Inténtalo de nuevo.');
+    } catch {
+      toast.error(t('errorOccurred'));
     } finally {
       setIsLoading(false);
     }
@@ -106,11 +101,7 @@ export const AuthPage: React.FC = () => {
 
   const handleInputChange = (field: string, value: string) => {
     setFormData(prev => ({ ...prev, [field]: value }));
-    
-    // Limpiar error cuando el usuario empiece a escribir
-    if (errors[field]) {
-      setErrors(prev => ({ ...prev, [field]: '' }));
-    }
+    if (errors[field]) setErrors(prev => ({ ...prev, [field]: '' }));
   };
 
   const toggleMode = () => {
@@ -138,24 +129,22 @@ export const AuthPage: React.FC = () => {
             {mode === 'signin' ? t('signIn') : t('signUp')}
           </CardTitle>
           <p className="text-muted-foreground">
-            {mode === 'signin' 
-              ? 'Ingresa a tu cuenta' 
-              : 'Crea una nueva cuenta'}
+            {mode === 'signin' ? t('signInSubtitle') : 'Create a new account'}
           </p>
         </CardHeader>
 
         <CardContent>
           <form onSubmit={handleSubmit} className="space-y-4">
-            {/* Campo de nombre (solo para registro) */}
+            {/* Name (sign up only) */}
             {mode === 'signup' && (
               <div className="space-y-2">
-                <Label htmlFor="name">Nombre completo</Label>
+                <Label htmlFor="name">{t('name')}</Label>
                 <div className="relative">
                   <User className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
                   <Input
                     id="name"
                     type="text"
-                    placeholder="Tu nombre completo"
+                    placeholder="Your full name"
                     value={formData.name}
                     onChange={(e) => handleInputChange('name', e.target.value)}
                     className={`pl-10 ${errors.name ? 'border-destructive' : ''}`}
@@ -169,7 +158,7 @@ export const AuthPage: React.FC = () => {
               </div>
             )}
 
-            {/* Campo de email */}
+            {/* Email */}
             <div className="space-y-2">
               <Label htmlFor="email">{t('email')}</Label>
               <div className="relative">
@@ -177,7 +166,7 @@ export const AuthPage: React.FC = () => {
                 <Input
                   id="email"
                   type="email"
-                  placeholder="tu@email.com"
+                  placeholder="you@email.com"
                   value={formData.email}
                   onChange={(e) => handleInputChange('email', e.target.value)}
                   className={`pl-10 ${errors.email ? 'border-destructive' : ''}`}
@@ -190,7 +179,7 @@ export const AuthPage: React.FC = () => {
               )}
             </div>
 
-            {/* Campo de contraseña */}
+            {/* Password */}
             <div className="space-y-2">
               <Label htmlFor="password">{t('password')}</Label>
               <div className="relative">
@@ -224,7 +213,7 @@ export const AuthPage: React.FC = () => {
               )}
             </div>
 
-            {/* Campo de confirmación de contraseña (solo para registro) */}
+            {/* Confirm password (sign up only) */}
             {mode === 'signup' && (
               <div className="space-y-2">
                 <Label htmlFor="confirmPassword">{t('confirmPassword')}</Label>
@@ -260,10 +249,10 @@ export const AuthPage: React.FC = () => {
               </div>
             )}
 
-            {/* Selección de equipo favorito (solo para registro) */}
+            {/* Favorite team (sign up only) */}
             {mode === 'signup' && (
               <div className="space-y-2">
-                <Label htmlFor="favoriteTeam">Equipo Favorito (Opcional)</Label>
+                <Label htmlFor="favoriteTeam">Favorite Team (Optional)</Label>
                 <div className="relative">
                   <Star className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
                   <select
@@ -272,7 +261,7 @@ export const AuthPage: React.FC = () => {
                     onChange={(e) => handleInputChange('favoriteTeam', e.target.value)}
                     className="w-full pl-10 pr-4 py-2 border border-input bg-background rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-ring focus:border-transparent"
                   >
-                    <option value="">Selecciona tu equipo favorito</option>
+                    <option value="">Select your favorite team</option>
                     {teams.map((team) => (
                       <option key={team.id} value={team.id}>
                         {team.logo} {team.name}
@@ -281,20 +270,14 @@ export const AuthPage: React.FC = () => {
                   </select>
                 </div>
                 <p className="text-xs text-muted-foreground">
-                  Te mostraremos contenido personalizado de tu equipo favorito
+                  We’ll show personalized content for your favorite team.
                 </p>
               </div>
             )}
 
-            {/* Botón de envío */}
-            <Button
-              type="submit"
-              className="w-full"
-              disabled={isLoading}
-            >
-              {isLoading ? (
-                'Procesando...'
-              ) : (
+            {/* Submit */}
+            <Button type="submit" className="w-full" disabled={isLoading}>
+              {isLoading ? t('loading') : (
                 <>
                   {mode === 'signin' ? t('signIn') : t('signUp')}
                   <ArrowRight className="ml-2 h-4 w-4" />
@@ -302,7 +285,7 @@ export const AuthPage: React.FC = () => {
               )}
             </Button>
 
-            {/* Enlace para cambiar modo */}
+            {/* Switch mode link */}
             <div className="text-center">
               <Button
                 type="button"
@@ -311,17 +294,18 @@ export const AuthPage: React.FC = () => {
                 className="text-sm"
               >
                 {mode === 'signin'
-                  ? '¿No tienes cuenta? Regístrate'
-                  : '¿Ya tienes cuenta? Inicia sesión'
+                  ? (<>{t('dontHaveAccount')} {t('signUpHere')}</>)
+                  : (<>{t('alreadyHaveAccount')} {t('signInHere')}</>)
                 }
               </Button>
             </div>
           </form>
 
-          {/* Información adicional */}
+          {/* Bottom legal */}
           <div className="mt-6 p-4 bg-muted rounded-lg">
             <p className="text-xs text-muted-foreground text-center">
-              Al continuar, aceptas nuestros términos de servicio y política de privacidad.
+              {t('byContinuing')} <a className="underline">{t('termsOfService')}</a> {t('and')}{' '}
+              <a className="underline">{t('privacyPolicy')}</a>.
             </p>
           </div>
         </CardContent>

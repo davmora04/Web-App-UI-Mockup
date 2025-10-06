@@ -28,21 +28,24 @@ export const MatchCard: React.FC<MatchCardProps> = ({ match, onViewDetail }) => 
 
   // Usa las claves: today, yesterday, tomorrow, inDays, daysAgo
   const formatDateBadge = (iso: string) => {
-    const d = new Date(iso);
-    const today = new Date();
+  const MS_PER_DAY = 86_400_000;
 
-    // Normaliza a medianoche para evitar desfaces por hora/minuto
-    d.setHours(0, 0, 0, 0);
-    today.setHours(0, 0, 0, 0);
+  const startOfDay = (d: Date) => new Date(d.getFullYear(), d.getMonth(), d.getDate());
 
-    const diffDays = Math.round((d.getTime() - today.getTime()) / 86400000);
+  const d = new Date(iso);
+  const today = new Date();
 
-    if (diffDays === 0) return t('today');
-    if (diffDays === 1) return t('tomorrow');
-    if (diffDays === -1) return t('yesterday');
-    if (diffDays > 0) return t('inDays', { n: diffDays });
-    return t('daysAgo', { n: Math.abs(diffDays) });
-  };
+  const deltaDays = Math.floor(
+    (startOfDay(d).getTime() - startOfDay(today).getTime()) / MS_PER_DAY
+  ); // futuro => positivo, pasado => negativo
+
+  if (deltaDays === 0) return t('today_time');
+  if (deltaDays === 1) return t('tomorrow_time');
+  if (deltaDays === -1) return t('yesterday_time');
+  if (deltaDays > 0) return t('inDays', { n: deltaDays });
+  return t('daysAgoFull', { n: Math.abs(deltaDays) });
+};
+
 
   // Resultado W/D/L
   const getTeamResult = (isHome: boolean) => {
