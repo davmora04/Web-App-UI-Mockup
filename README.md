@@ -20,7 +20,7 @@ Una aplicación web de estadísticas de fútbol desarrollada con React y TypeScr
 6. [Docker](#docker)
 
 ---
-
+  
 ## 🚀 Instalación y Ejecución
 
 ```bash
