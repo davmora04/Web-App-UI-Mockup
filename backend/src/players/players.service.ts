@@ -4,12 +4,6 @@ import { Model } from 'mongoose';
 import { Player, PlayerDocument } from './schemas/player.schema';
 import { CreatePlayerDto } from './dto/create-player.dto';
 
-/**
- * MÓDULO: Players
- * PROPÓSITO: Gestión de jugadores con sus características y estadísticas básicas
- * RELACIÓN CON FRONTEND: Fichas de jugadores, plantillas de equipos
- * PROBLEMA QUE RESUELVE: Almacena información detallada de jugadores
- */
 @Injectable()
 export class PlayersService {
   constructor(@InjectModel(Player.name) private playerModel: Model<PlayerDocument>) {}

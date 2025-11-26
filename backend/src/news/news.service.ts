@@ -4,12 +4,6 @@ import { Model } from 'mongoose';
 import { News, NewsDocument } from './schemas/news.schema';
 import { CreateNewsDto } from './dto/create-news.dto';
 
-/**
- * MÓDULO: News
- * PROPÓSITO: Gestión de noticias y contenido editorial deportivo
- * RELACIÓN CON FRONTEND: Sección de noticias, artículos destacados
- * PROBLEMA QUE RESUELVE: Publicación y organización de contenido informativo
- */
 @Injectable()
 export class NewsService {
   constructor(@InjectModel(News.name) private newsModel: Model<NewsDocument>) {}

@@ -5,22 +5,6 @@ import { Team, TeamDocument } from './schemas/team.schema';
 import { CreateTeamDto } from './dto/create-team.dto';
 import { UpdateTeamDto } from './dto/update-team.dto';
 
-/**
- * MÓDULO: Teams
- * 
- * PROPÓSITO:
- * Gestión completa de equipos de fútbol. Permite crear, leer, actualizar
- * y eliminar equipos, así como consultar tablas de posiciones por liga.
- * 
- * RELACIÓN CON FRONTEND:
- * - Provee datos para la vista de equipos
- * - Alimenta las tablas de posiciones
- * - Usado en selección de equipos favoritos
- * 
- * PROBLEMA QUE RESUELVE:
- * Centraliza la información de equipos y sus estadísticas en una temporada,
- * facilitando consultas rápidas y actualizaciones de posiciones.
- */
 @Injectable()
 export class TeamsService {
   constructor(

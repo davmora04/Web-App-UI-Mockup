@@ -4,12 +4,6 @@ import { Model } from 'mongoose';
 import { League, LeagueDocument } from './schemas/league.schema';
 import { CreateLeagueDto } from './dto/create-league.dto';
 
-/**
- * MÓDULO: Leagues
- * PROPÓSITO: Gestión de ligas/competiciones deportivas
- * RELACIÓN CON FRONTEND: Selector de ligas, filtros de equipos/partidos
- * PROBLEMA QUE RESUELVE: Organiza competiciones y sus temporadas
- */
 @Injectable()
 export class LeaguesService {
   constructor(@InjectModel(League.name) private leagueModel: Model<LeagueDocument>) {}

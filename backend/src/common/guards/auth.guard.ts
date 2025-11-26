@@ -8,23 +8,6 @@ import { Reflector } from '@nestjs/core';
 import { JwtService } from '@nestjs/jwt';
 import { Request } from 'express';
 
-/**
- * Guard personalizado: AuthGuard
- * 
- * Propósito: Proteger rutas que requieren autenticación mediante JWT.
- * Valida el token Bearer en el header Authorization.
- * 
- * Uso:
- * ```typescript
- * @UseGuards(AuthGuard)
- * @Get('protected')
- * protectedRoute(@CurrentUser() user) {
- *   return { message: 'Access granted', user };
- * }
- * ```
- * 
- * El usuario decodificado se adjunta a request.user para uso posterior.
- */
 @Injectable()
 export class AuthGuard implements CanActivate {
   constructor(
@@ -33,7 +16,6 @@ export class AuthGuard implements CanActivate {
   ) {}
 
   async canActivate(context: ExecutionContext): Promise<boolean> {
-    // Verificar si la ruta es pública
     const isPublic = this.reflector.get<boolean>(
       'isPublic',
       context.getHandler(),

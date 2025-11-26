@@ -6,12 +6,6 @@ import * as bcrypt from 'bcrypt';
 import { User, UserDocument } from './schemas/user.schema';
 import { RegisterUserDto, LoginUserDto, UpdateUserDto } from './dto/create-user.dto';
 
-/**
- * MÓDULO: Users
- * PROPÓSITO: Gestión de usuarios y autenticación con JWT
- * RELACIÓN CON FRONTEND: Login, registro, perfiles de usuario
- * PROBLEMA QUE RESUELVE: Autenticación segura y gestión de perfiles
- */
 @Injectable()
 export class UsersService {
   constructor(
@@ -43,6 +37,10 @@ export class UsersService {
 
   async findOne(id: string): Promise<User> {
     return this.userModel.findById(id).populate('favoriteTeamId').exec();
+  }
+
+  async findAll(): Promise<User[]> {
+    return this.userModel.find().select('-password').exec();
   }
 
   async update(id: string, dto: UpdateUserDto): Promise<User> {

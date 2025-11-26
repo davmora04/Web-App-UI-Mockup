@@ -4,22 +4,6 @@ import { Model } from 'mongoose';
 import { Match, MatchDocument } from './schemas/match.schema';
 import { CreateMatchDto } from './dto/create-match.dto';
 
-/**
- * MÓDULO: Matches
- * 
- * PROPÓSITO:
- * Gestión de partidos de fútbol, incluyendo programación, resultados
- * en vivo y partidos históricos.
- * 
- * RELACIÓN CON FRONTEND:
- * - Calendario de partidos
- * - Resultados en tiempo real
- * - Historial de enfrentamientos
- * 
- * PROBLEMA QUE RESUELVE:
- * Centraliza información de partidos pasados, presentes y futuros,
- * permitiendo consultas por fecha, equipo y estado.
- */
 @Injectable()
 export class MatchesService {
   constructor(@InjectModel(Match.name) private matchModel: Model<MatchDocument>) {}

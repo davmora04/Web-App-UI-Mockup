@@ -3,12 +3,6 @@ import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { Favorite, FavoriteDocument } from './schemas/favorite.schema';
 
-/**
- * MÓDULO: Favorites
- * PROPÓSITO: Gestión de equipos y jugadores favoritos por usuario
- * RELACIÓN CON FRONTEND: Funcionalidad de "favoritos", perfil de usuario
- * PROBLEMA QUE RESUELVE: Personalización de la experiencia del usuario
- */
 @Injectable()
 export class FavoritesService {
   constructor(@InjectModel(Favorite.name) private favoriteModel: Model<FavoriteDocument>) {}

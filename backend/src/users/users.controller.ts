@@ -26,6 +26,13 @@ export class UsersController {
     return this.usersService.login(dto);
   }
 
+  @Public()
+  @Get()
+  @ApiOperation({ summary: 'Listar usuarios' })
+  findAll() {
+    return this.usersService.findAll();
+  }
+
   @Get('me')
   @ApiBearerAuth()
   @ApiOperation({ summary: 'Perfil actual' })

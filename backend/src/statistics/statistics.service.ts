@@ -4,12 +4,6 @@ import { Model } from 'mongoose';
 import { Statistic, StatisticDocument } from './schemas/statistic.schema';
 import { CreateStatisticDto } from './dto/create-statistic.dto';
 
-/**
- * MÓDULO: Statistics
- * PROPÓSITO: Gestión de estadísticas detalladas de jugadores y equipos
- * RELACIÓN CON FRONTEND: Tablas de estadísticas, goleadores, rankings
- * PROBLEMA QUE RESUELVE: Análisis de rendimiento y comparativas
- */
 @Injectable()
 export class StatisticsService {
   constructor(@InjectModel(Statistic.name) private statisticModel: Model<StatisticDocument>) {}
