@@ -12,7 +12,7 @@ Backend NestJS + MongoDB para sistema de estadísticas de fútbol.
 - Jest
 - TypeScript 5.1.3
 - Docker
-
+x
 ## Módulos
 
 1. **Teams** - Gestión de equipos
