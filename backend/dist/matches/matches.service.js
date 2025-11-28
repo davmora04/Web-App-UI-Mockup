@@ -26,7 +26,7 @@ let MatchesService = class MatchesService {
         return createdMatch.save();
     }
     async findAll() {
-        return this.matchModel.find().populate('homeTeamId awayTeamId').sort({ matchDate: -1 }).exec();
+        return this.matchModel.find().populate('homeTeamId awayTeamId').sort({ matchDate: -1, date: -1 }).exec();
     }
     async findOne(id) {
         const match = await this.matchModel.findById(id).populate('homeTeamId awayTeamId').exec();
@@ -46,10 +46,16 @@ let MatchesService = class MatchesService {
             throw new common_1.NotFoundException(`Partido con ID "${id}" no encontrado`);
     }
     async getUpcoming(limit = 10) {
+        const now = new Date();
         return this.matchModel
-            .find({ matchDate: { $gte: new Date() }, status: 'scheduled' })
+            .find({
+            $or: [
+                { matchDate: { $gte: now }, status: { $in: ['scheduled', 'upcoming'] } },
+                { date: { $gte: now }, status: { $in: ['scheduled', 'upcoming'] } }
+            ]
+        })
             .populate('homeTeamId awayTeamId')
-            .sort({ matchDate: 1 })
+            .sort({ matchDate: 1, date: 1 })
             .limit(limit)
             .exec();
     }
@@ -61,9 +67,9 @@ let MatchesService = class MatchesService {
     }
     async getRecent(limit = 10) {
         return this.matchModel
-            .find({ status: 'finished' })
+            .find({ status: { $in: ['finished'] } })
             .populate('homeTeamId awayTeamId')
-            .sort({ matchDate: -1 })
+            .sort({ matchDate: -1, date: -1 })
             .limit(limit)
             .exec();
     }
@@ -73,7 +79,7 @@ let MatchesService = class MatchesService {
             $or: [{ homeTeamId: teamId }, { awayTeamId: teamId }],
         })
             .populate('homeTeamId awayTeamId')
-            .sort({ matchDate: -1 })
+            .sort({ matchDate: -1, date: -1 })
             .exec();
     }
 };

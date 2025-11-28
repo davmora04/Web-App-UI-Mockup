@@ -10,6 +10,7 @@ export interface Team {
   id: string;
   name: string;
   logo: string;
+  leagueId?: string;  // For filtering by league
   position?: number;
   points?: number;
   played?: number;
@@ -60,32 +61,32 @@ export interface League {
 // ============================================
 
 // Ligas disponibles
-export const leagues: League[] = [
+export let leagues: League[] = [
   { id: 'laliga', name: 'La Liga', country: 'España', logo: '🇪🇸', season: '2024/25' },
   { id: 'premier', name: 'Premier League', country: 'Inglaterra', logo: '🏴󠁧󠁢󠁥󠁮󠁧󠁿', season: '2024/25' },
   { id: 'seriea', name: 'Serie A', country: 'Italia', logo: '🇮🇹', season: '2024/25' }
 ];
 
 // Equipos de las diferentes ligas
-export const teams: Team[] = [
+export let teams: Team[] = [
   // La Liga
-  { id: 'real-madrid', name: 'Real Madrid', logo: '⚪', position: 1, points: 45, played: 18, won: 14, drawn: 3, lost: 1, goalsFor: 42, goalsAgainst: 15, goalDifference: 27, form: ['W', 'W', 'D', 'W', 'W'] },
-  { id: 'barcelona', name: 'Barcelona', logo: '🔵', position: 2, points: 41, played: 18, won: 13, drawn: 2, lost: 3, goalsFor: 45, goalsAgainst: 20, goalDifference: 25, form: ['W', 'L', 'W', 'W', 'D'] },
-  { id: 'atletico', name: 'Atlético Madrid', logo: '🔴', position: 3, points: 38, played: 18, won: 11, drawn: 5, lost: 2, goalsFor: 28, goalsAgainst: 16, goalDifference: 12, form: ['D', 'W', 'W', 'D', 'W'] },
+  { id: 'real-madrid', name: 'Real Madrid', logo: '⚪', leagueId: 'laliga', position: 1, points: 45, played: 18, won: 14, drawn: 3, lost: 1, goalsFor: 42, goalsAgainst: 15, goalDifference: 27, form: ['W', 'W', 'D', 'W', 'W'] },
+  { id: 'barcelona', name: 'Barcelona', logo: '🔵', leagueId: 'laliga', position: 2, points: 41, played: 18, won: 13, drawn: 2, lost: 3, goalsFor: 45, goalsAgainst: 20, goalDifference: 25, form: ['W', 'L', 'W', 'W', 'D'] },
+  { id: 'atletico', name: 'Atlético Madrid', logo: '🔴', leagueId: 'laliga', position: 3, points: 38, played: 18, won: 11, drawn: 5, lost: 2, goalsFor: 28, goalsAgainst: 16, goalDifference: 12, form: ['D', 'W', 'W', 'D', 'W'] },
   
   // Premier League
-  { id: 'liverpool', name: 'Liverpool', logo: '🔴', position: 1, points: 48, played: 19, won: 15, drawn: 3, lost: 1, goalsFor: 47, goalsAgainst: 19, goalDifference: 28, form: ['W', 'W', 'W', 'D', 'W'] },
-  { id: 'arsenal', name: 'Arsenal', logo: '🔴', position: 2, points: 43, played: 19, won: 13, drawn: 4, lost: 2, goalsFor: 40, goalsAgainst: 20, goalDifference: 20, form: ['W', 'D', 'W', 'W', 'L'] },
-  { id: 'chelsea', name: 'Chelsea', logo: '🔵', position: 3, points: 35, played: 19, won: 10, drawn: 5, lost: 4, goalsFor: 38, goalsAgainst: 25, goalDifference: 13, form: ['W', 'W', 'D', 'L', 'W'] },
+  { id: 'liverpool', name: 'Liverpool', logo: '🔴', leagueId: 'premier', position: 1, points: 48, played: 19, won: 15, drawn: 3, lost: 1, goalsFor: 47, goalsAgainst: 19, goalDifference: 28, form: ['W', 'W', 'W', 'D', 'W'] },
+  { id: 'arsenal', name: 'Arsenal', logo: '🔴', leagueId: 'premier', position: 2, points: 43, played: 19, won: 13, drawn: 4, lost: 2, goalsFor: 40, goalsAgainst: 20, goalDifference: 20, form: ['W', 'D', 'W', 'W', 'L'] },
+  { id: 'chelsea', name: 'Chelsea', logo: '🔵', leagueId: 'premier', position: 3, points: 35, played: 19, won: 10, drawn: 5, lost: 4, goalsFor: 38, goalsAgainst: 25, goalDifference: 13, form: ['W', 'W', 'D', 'L', 'W'] },
   
   // Serie A
-  { id: 'juventus', name: 'Juventus', logo: '⚫', position: 1, points: 47, played: 20, won: 14, drawn: 5, lost: 1, goalsFor: 35, goalsAgainst: 12, goalDifference: 23, form: ['W', 'D', 'W', 'W', 'W'] },
-  { id: 'milan', name: 'AC Milan', logo: '🔴', position: 2, points: 43, played: 20, won: 13, drawn: 4, lost: 3, goalsFor: 41, goalsAgainst: 22, goalDifference: 19, form: ['W', 'W', 'L', 'W', 'D'] },
-  { id: 'inter', name: 'Inter Milan', logo: '🔵', position: 3, points: 42, played: 19, won: 13, drawn: 3, lost: 3, goalsFor: 43, goalsAgainst: 18, goalDifference: 25, form: ['W', 'W', 'W', 'L', 'W'] }
+  { id: 'juventus', name: 'Juventus', logo: '⚫', leagueId: 'seriea', position: 1, points: 47, played: 20, won: 14, drawn: 5, lost: 1, goalsFor: 35, goalsAgainst: 12, goalDifference: 23, form: ['W', 'D', 'W', 'W', 'W'] },
+  { id: 'milan', name: 'AC Milan', logo: '🔴', leagueId: 'seriea', position: 2, points: 43, played: 20, won: 13, drawn: 4, lost: 3, goalsFor: 41, goalsAgainst: 22, goalDifference: 19, form: ['W', 'W', 'L', 'W', 'D'] },
+  { id: 'inter', name: 'Inter Milan', logo: '🔵', leagueId: 'seriea', position: 3, points: 42, played: 19, won: 13, drawn: 3, lost: 3, goalsFor: 43, goalsAgainst: 18, goalDifference: 25, form: ['W', 'W', 'W', 'L', 'W'] }
 ];
 
 // Partidos programados y finalizados
-export const matches: Match[] = [
+export let matches: Match[] = [
   {
     id: 'match1',
     homeTeam: teams.find(t => t.id === 'real-madrid')!,
@@ -130,7 +131,7 @@ export const matches: Match[] = [
   }
 ];
 
-export const news: News[] = [
+export let news: News[] = [
   {
     id: 'news1',
     title: 'Real Madrid vence al Barcelona en El Clásico',
@@ -165,6 +166,7 @@ export const news: News[] = [
 
 // Import translations from dedicated files
 import { useTranslation } from '../hooks/useTranslation';
+import api from '../services/api';
 
 // Import types
 import { Language, TranslationKey } from '../locales';
@@ -177,6 +179,10 @@ interface AppContextType {
   selectedLeague: string;
   selectedSeason: string;
   favorites: Team[];
+  leagues: League[];
+  teams: Team[];
+  matches: Match[];
+  news: News[];
   setLanguage: (language: Language) => void;
   setTheme: (theme: 'light' | 'dark') => void;
   setCurrentPage: (page: string) => void;
@@ -222,7 +228,12 @@ export const AppProvider: React.FC<AppProviderProps> = ({ children }) => {
     loadFavorites
   } = useFavorites();
 
-  // Cargar favoritos desde localStorage
+  // ...existing code...
+
+  // Local state for fetched data (keeps UI reactive even if other modules import top-level exports)
+  // ...existing code...
+
+  // Cargar favoritos desde localStorage (lógica original, sin migración)
   useEffect(() => {
     const savedFavorites = localStorage.getItem('statfut-favorites');
     if (savedFavorites) {
@@ -242,14 +253,80 @@ export const AppProvider: React.FC<AppProviderProps> = ({ children }) => {
 
   const addToFavorites = (team: Team) => {
     addFavorite(team);
+    // Optional: sync with backend if authenticated
+    const token = localStorage.getItem('statfut-token');
+    if (token) {
+      api.fetchWithAuth('/api/favorites', {
+        method: 'POST',
+        body: JSON.stringify({ teamId: team.id })
+      }).catch(() => {});
+    }
   };
 
   const removeFromFavorites = (teamId: string) => {
     removeFavorite(teamId);
+    const token = localStorage.getItem('statfut-token');
+    if (token) {
+      api.fetchWithAuth(`/api/favorites/${encodeURIComponent(teamId)}`, {
+        method: 'DELETE'
+      }).catch(() => {});
+    }
   };
 
   // Use the advanced translation hook
   const { t, formatRelativeTime, formatDate, formatTime } = useTranslation(language);
+
+  // Local state for fetched data (keeps UI reactive even if other modules import top-level exports)
+  const [leaguesState, setLeaguesState] = useState<League[]>(leagues);
+  const [teamsState, setTeamsState] = useState<Team[]>(teams);
+  const [matchesState, setMatchesState] = useState<Match[]>(matches);
+  const [newsState, setNewsState] = useState<News[]>(news);
+
+  // Fetch data from backend and update exported bindings and local state
+  useEffect(() => {
+    let mounted = true;
+
+    const load = async () => {
+      try {
+        // Always fetch all teams (don't filter by league), leagues and news
+        const [fLeagues, fTeams, fMatches, fNews] = await Promise.all([
+          api.getLeagues().catch(() => leagues),
+          api.getTeams().catch(() => teams),  // Get ALL teams, don't filter by league here
+          api.getMatches().catch(() => matches), // Get ALL matches instead of just upcoming
+          api.getNews().catch(() => news)
+        ]);
+
+        if (!mounted) return;
+
+        console.log('AppContext loaded data:', {
+          leagues: fLeagues?.length,
+          teams: fTeams?.length,
+          matches: fMatches?.length,
+          news: fNews?.length
+        });
+        console.log('Raw matches from API:', fMatches);
+        if (fMatches?.length > 0) {
+          console.log('First match league:', fMatches[0].league, 'Sample matches:', fMatches.slice(0, 3).map(m => ({ home: m.homeTeam?.name, away: m.awayTeam?.name, league: m.league })));
+        }
+
+        // update exported bindings so modules importing `teams`, `leagues`, etc get fresh data
+        leagues = Array.isArray(fLeagues) ? fLeagues : leagues;
+        teams = Array.isArray(fTeams) ? fTeams : teams;
+        matches = Array.isArray(fMatches) ? fMatches : matches;
+        news = Array.isArray(fNews) ? fNews : news;
+
+        setLeaguesState(leagues);
+        setTeamsState(teams);
+        setMatchesState(matches);
+        setNewsState(news);
+      } catch (err) {
+        // keep mocks if API fails
+      }
+    };
+
+    load();
+    return () => { mounted = false; };
+  }, []);
 
   // Aplicar tema a la clase del document
   React.useEffect(() => {
@@ -263,6 +340,10 @@ export const AppProvider: React.FC<AppProviderProps> = ({ children }) => {
     selectedLeague,
     selectedSeason,
     favorites,
+    leagues: leaguesState,
+    teams: teamsState,
+    matches: matchesState,
+    news: newsState,
     setLanguage,
     setTheme,
     setCurrentPage,

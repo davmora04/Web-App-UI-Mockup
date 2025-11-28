@@ -2,6 +2,7 @@ const mongoose = require('mongoose');
 require('dotenv').config();
 
 const MONGODB_URI = process.env.MONGODB_URI || 'mongodb://localhost:27017/statfut';
+const bcrypt = require('bcrypt');
 
 // Datos de ejemplo para poblar la base de datos
 const seedData = {
@@ -93,7 +94,7 @@ const seedData = {
     {
       username: 'admin',
       email: 'admin@statfut.com',
-      password: '$2b$10$XqZ3Z9Z9Z9Z9Z9Z9Z9Z9ZuZFZ9Z9Z9Z9Z9Z9Z9Z9Z9Z9Z', // password: admin123
+      password: 'admin123',
       firstName: 'Admin',
       lastName: 'User',
       role: 'admin',
@@ -101,7 +102,7 @@ const seedData = {
     {
       username: 'testuser',
       email: 'user@test.com',
-      password: '$2b$10$XqZ3Z9Z9Z9Z9Z9Z9Z9Z9ZuZFZ9Z9Z9Z9Z9Z9Z9Z9Z9Z9Z', // password: test123
+      password: 'test123',
       firstName: 'Test',
       lastName: 'User',
       role: 'user',
@@ -479,10 +480,15 @@ async function seed() {
     await Team.insertMany(seedData.teams);
     console.log(`✅ ${seedData.teams.length} equipos insertados\n`);
 
-    // Insertar usuarios
+    // Insertar usuarios (hashed)
     console.log('👥 Insertando usuarios...');
-    await User.insertMany(seedData.users);
-    console.log(`✅ ${seedData.users.length} usuarios insertados\n`);
+    const usersToInsert = [];
+    for (const u of seedData.users) {
+      const hashed = await bcrypt.hash(u.password, 10);
+      usersToInsert.push({ ...u, password: hashed });
+    }
+    await User.insertMany(usersToInsert);
+    console.log(`✅ ${usersToInsert.length} usuarios insertados\n`);
 
     // Insertar partidos
     console.log('⚽ Insertando partidos...');

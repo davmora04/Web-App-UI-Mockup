@@ -1,7 +1,7 @@
 import React from 'react';
 import { Sidebar } from './Sidebar';
 import { MatchCard } from './MatchCard';
-import { useApp, matches, leagues } from './AppContext';
+import { useApp } from './AppContext';
 import { Button } from './ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from './ui/card';
 import { Bell, MessageCircle, Zap, AlertTriangle, Settings } from 'lucide-react';
@@ -14,13 +14,17 @@ interface HomePageProps {
 }
 
 export const HomePage: React.FC<HomePageProps> = ({ onViewMatchDetail, onViewTeamDetail }) => {
-  const { selectedLeague, selectedSeason, favorites, t } = useApp();
+  const { selectedLeague, selectedSeason, favorites, t, matches, leagues } = useApp();
   const [showDragDrop, setShowDragDrop] = React.useState(false);
 
-  // Filtrar partidos por liga seleccionada
-  const filteredMatches = matches
-    .filter(match => match.league === selectedLeague)
-    .slice(0, 5); // Mostrar solo los últimos 5
+  console.log('HomePage - matches:', matches.length, 'selectedLeague:', selectedLeague);
+  console.log('HomePage - First match:', matches[0]);
+
+  // Filtrar partidos por liga seleccionada - mostrar todos si no hay matches con league
+  const leagueMatches = matches.filter(match => match.league === selectedLeague);
+  const filteredMatches = (leagueMatches.length > 0 ? leagueMatches : matches).slice(0, 5);
+  
+  console.log('HomePage - filteredMatches:', filteredMatches.length);
 
   const currentLeague = leagues.find(l => l.id === selectedLeague);
 

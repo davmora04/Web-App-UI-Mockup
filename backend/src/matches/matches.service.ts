@@ -14,7 +14,7 @@ export class MatchesService {
   }
 
   async findAll(): Promise<Match[]> {
-    return this.matchModel.find().populate('homeTeamId awayTeamId').sort({ matchDate: -1 }).exec();
+    return this.matchModel.find().populate('homeTeamId awayTeamId').sort({ matchDate: -1, date: -1 }).exec();
   }
 
   async findOne(id: string): Promise<Match> {
@@ -35,10 +35,17 @@ export class MatchesService {
   }
 
   async getUpcoming(limit: number = 10): Promise<Match[]> {
+    // Support both 'date' and 'matchDate' fields, and both 'scheduled' and 'upcoming' statuses
+    const now = new Date();
     return this.matchModel
-      .find({ matchDate: { $gte: new Date() }, status: 'scheduled' })
+      .find({
+        $or: [
+          { matchDate: { $gte: now }, status: { $in: ['scheduled', 'upcoming'] } },
+          { date: { $gte: now }, status: { $in: ['scheduled', 'upcoming'] } }
+        ]
+      })
       .populate('homeTeamId awayTeamId')
-      .sort({ matchDate: 1 })
+      .sort({ matchDate: 1, date: 1 })
       .limit(limit)
       .exec();
   }
@@ -52,9 +59,9 @@ export class MatchesService {
 
   async getRecent(limit: number = 10): Promise<Match[]> {
     return this.matchModel
-      .find({ status: 'finished' })
+      .find({ status: { $in: ['finished'] } })
       .populate('homeTeamId awayTeamId')
-      .sort({ matchDate: -1 })
+      .sort({ matchDate: -1, date: -1 })
       .limit(limit)
       .exec();
   }
@@ -65,7 +72,7 @@ export class MatchesService {
         $or: [{ homeTeamId: teamId }, { awayTeamId: teamId }],
       })
       .populate('homeTeamId awayTeamId')
-      .sort({ matchDate: -1 })
+      .sort({ matchDate: -1, date: -1 })
       .exec();
   }
 }
