@@ -11,6 +11,8 @@ export default defineConfig({
     setupFiles: ['./src/test/setup.ts'],
     css: true,
     reporters: ['verbose'],
+    include: ['src/**/*.{test,spec}.{js,mjs,cjs,ts,mts,cts,jsx,tsx}'],
+    exclude: ['node_modules/', 'backend/**/*', 'build/**/*', 'cypress/**/*'],
     coverage: {
       reporter: ['html', 'json', 'text'],
       exclude: [
