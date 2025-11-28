@@ -39,7 +39,6 @@ export function useSearch(
     setSearchQuery(query);
   }, []);
 
-  // Execute search when debounced query changes
   useState(() => {
     if (debouncedQuery) {
       onSearch(debouncedQuery);

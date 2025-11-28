@@ -7,3 +7,11 @@ Para crear un contenedor de Docker, seguimos los siguientes pasos:
 3. Ingresar el comando 'docker run -d --name statfut -p 8080:80 statfut'. Aquí se puede escoger la dirección IP del sitio web junto con el nombre escogido anteriormente.
 
 4. Ingresar a la dirección IP anteriormente escogida (en este caso http://localhost:8080/) y verificar que el sitio web esté corriendo de manera correcta.
+
+PARA LEVANTAR TODO:
+# Terminal 1 - Backend + MongoDB
+cd backend
+docker-compose up -d
+
+para verificar que esté corriendo:
+docker-compose ps

@@ -45,7 +45,6 @@ export function useAccessibility() {
       container.addEventListener('keydown', handleTabKey);
       container.addEventListener('keydown', handleEscapeKey);
       
-      // Focus first element on mount
       firstElement?.focus();
 
       return () => {

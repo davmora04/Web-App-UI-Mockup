@@ -1,4 +1,3 @@
-// Custom hooks for the StatFut application
 export { useLocalStorage } from './useLocalStorage';
 export { useDebounce, useSearch } from './useSearch';
 export { useMobile, useTheme } from './useResponsive';

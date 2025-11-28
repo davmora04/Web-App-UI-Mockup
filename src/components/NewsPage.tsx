@@ -3,7 +3,7 @@ import { ArrowLeft, Calendar, ExternalLink } from 'lucide-react';
 import { Button } from './ui/button';
 import { Card, CardContent, CardHeader } from './ui/card';
 import { Badge } from './ui/badge';
-import { useApp, news, News } from './AppContext';
+import { useApp, News } from './AppContext';
 import { ImageWithFallback } from './figma/ImageWithFallback';
 import { newsI18n } from '@/locales/news';
 
@@ -13,7 +13,7 @@ interface NewsPageProps {
 }
 
 export const NewsPage: React.FC<NewsPageProps> = ({ selectedNewsId, onSelectNews }) => {
-  const { t, language, formatRelativeTime } = useApp();
+  const { t, language, formatRelativeTime, news } = useApp();
 
   const localize = (n: News): News => {
     const tx = (newsI18n as any)?.[language]?.[n.id];

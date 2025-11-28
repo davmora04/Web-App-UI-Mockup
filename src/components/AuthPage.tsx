@@ -5,11 +5,11 @@ import { Input } from './ui/input';
 import { Label } from './ui/label';
 import { Card, CardContent, CardHeader, CardTitle } from './ui/card';
 import { Alert, AlertDescription } from './ui/alert';
-import { useApp, teams } from './AppContext';
+import { useApp } from './AppContext';
 import { toast } from 'sonner';
 
 export const AuthPage: React.FC = () => {
-  const { t } = useApp();
+  const { t, teams } = useApp();
   const [mode, setMode] = React.useState<'signin' | 'signup'>('signin');
   const [showPassword, setShowPassword] = React.useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = React.useState(false);

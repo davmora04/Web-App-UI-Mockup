@@ -3,7 +3,7 @@ import { ArrowUpDown, ArrowUp, ArrowDown, Download } from 'lucide-react';
 import { Button } from './ui/button';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from './ui/table';
 
-import { useApp, teams, leagues } from './AppContext';
+import { useApp } from './AppContext';
 import { toast } from 'sonner';
 
 type SortField = 'position' | 'team' | 'played' | 'won' | 'drawn' | 'lost' | 'goalsFor' | 'goalsAgainst' | 'goalDifference' | 'points';
@@ -14,20 +14,17 @@ interface TablePageProps {
 }
 
 export const TablePage: React.FC<TablePageProps> = ({ onViewTeamDetail }) => {
-  const { selectedLeague, t } = useApp();
+  const { selectedLeague, t, teams, leagues } = useApp();
   const [sortField, setSortField] = React.useState<SortField>('position');
   const [sortDirection, setSortDirection] = React.useState<SortDirection>('asc');
 
   const currentLeague = leagues.find(l => l.id === selectedLeague);
   
-  // Filtrar equipos por liga (mock - en una app real esto vendría del backend)
+  // Filtrar equipos por liga actual
+  // Los equipos del backend tienen leagueId ya mapeado a "laliga", "premier", "seriea"
   const leagueTeams = teams.filter(team => {
-    // Mapeo simple para el mock
-    if (selectedLeague === 'laliga') return ['real-madrid', 'barcelona', 'atletico'].includes(team.id);
-    if (selectedLeague === 'premier') return ['liverpool', 'arsenal', 'chelsea'].includes(team.id);
-    if (selectedLeague === 'seriea') return ['juventus', 'milan', 'inter'].includes(team.id);
-    return false;
-  });
+    return team.leagueId === selectedLeague;
+  }).sort((a, b) => (a.position || 0) - (b.position || 0));
 
   const handleSort = (field: SortField) => {
     if (sortField === field) {

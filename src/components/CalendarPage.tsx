@@ -3,19 +3,19 @@ import { Calendar as CalendarIcon, Clock, MapPin } from 'lucide-react';
 import { Button } from './ui/button';
 import { Card, CardContent } from './ui/card';
 import { Badge } from './ui/badge';
-import { useApp, matches, leagues } from './AppContext';
+import { useApp } from './AppContext';
 
 interface CalendarPageProps {
   onViewMatchDetail?: (matchId: string) => void;
 }
 
 export const CalendarPage: React.FC<CalendarPageProps> = ({ onViewMatchDetail }) => {
-  const { selectedLeague, t, formatDate, formatTime } = useApp();
+  const { selectedLeague, t, formatDate, formatTime, matches, leagues } = useApp();
 
   const currentLeague = leagues.find(l => l.id === selectedLeague);
   
-  // Filtrar partidos por liga seleccionada
-  const filteredMatches = matches.filter(match => match.league === selectedLeague);
+  const leagueMatches = matches.filter(match => match.league === selectedLeague);
+  const filteredMatches = leagueMatches.length > 0 ? leagueMatches : matches;
 
   // Agrupar partidos por fecha
   const groupedMatches = filteredMatches.reduce((groups, match) => {

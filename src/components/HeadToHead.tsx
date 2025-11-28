@@ -4,7 +4,7 @@ import { Button } from './ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from './ui/card';
 import { Badge } from './ui/badge';
 import { Progress } from './ui/progress';
-import { useApp, teams } from './AppContext';
+import { useApp } from './AppContext';
 
 interface HeadToHeadProps {
   teamAId: string;
@@ -22,7 +22,7 @@ const mockH2HMatches = [
 ];
 
 export const HeadToHead: React.FC<HeadToHeadProps> = ({ teamAId, teamBId, onBack }) => {
-  const { } = useApp();
+  const { teams } = useApp();
   
   const teamA = teams.find(t => t.id === teamAId);
   const teamB = teams.find(t => t.id === teamBId);
