@@ -14,9 +14,7 @@ interface MatchDetailProps {
 }
 
 // Datos mock para alineaciones y eventos
-// Mock lineups - will change based on the match teams
 const getLineupForMatch = (matchId: string) => {
-  // Default lineup (used for most matches)
   const defaultLineup = {
     home: {
       formation: '4-3-3',

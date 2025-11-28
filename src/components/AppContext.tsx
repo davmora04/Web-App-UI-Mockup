@@ -10,7 +10,7 @@ export interface Team {
   id: string;
   name: string;
   logo: string;
-  leagueId?: string;  // For filtering by league
+  leagueId?: string;  
   position?: number;
   points?: number;
   played?: number;
@@ -164,11 +164,11 @@ export let news: News[] = [
   }
 ];
 
-// Import translations from dedicated files
+
 import { useTranslation } from '../hooks/useTranslation';
 import api from '../services/api';
 
-// Import types
+
 import { Language, TranslationKey } from '../locales';
 
 // Contexto
@@ -212,14 +212,12 @@ interface AppProviderProps {
 }
 
 export const AppProvider: React.FC<AppProviderProps> = ({ children }) => {
-  // Use custom hooks for persistent storage
   const [language, setLanguage] = useLocalStorage<'es' | 'en'>('statfut-language', 'es');
   const [theme, setTheme] = useLocalStorage<'light' | 'dark'>('statfut-theme', 'dark');
   const [currentPage, setCurrentPage] = useState('home');
   const [selectedLeague, setSelectedLeague] = useLocalStorage('statfut-selected-league', 'laliga');
   const [selectedSeason, setSelectedSeason] = useLocalStorage('statfut-selected-season', '2024/25');
   
-  // Use custom favorites hook with useReducer
   const {
     favorites,
     addToFavorites: addFavorite,
@@ -228,10 +226,7 @@ export const AppProvider: React.FC<AppProviderProps> = ({ children }) => {
     loadFavorites
   } = useFavorites();
 
-  // ...existing code...
 
-  // Local state for fetched data (keeps UI reactive even if other modules import top-level exports)
-  // ...existing code...
 
   // Cargar favoritos desde localStorage (lógica original, sin migración)
   useEffect(() => {
@@ -246,14 +241,12 @@ export const AppProvider: React.FC<AppProviderProps> = ({ children }) => {
     }
   }, [loadFavorites]);
 
-  // Save favorites to localStorage when they change
   useEffect(() => {
     localStorage.setItem('statfut-favorites', JSON.stringify(favorites));
   }, [favorites]);
 
   const addToFavorites = (team: Team) => {
     addFavorite(team);
-    // Optional: sync with backend if authenticated
     const token = localStorage.getItem('statfut-token');
     if (token) {
       api.fetchWithAuth('/api/favorites', {
@@ -273,43 +266,28 @@ export const AppProvider: React.FC<AppProviderProps> = ({ children }) => {
     }
   };
 
-  // Use the advanced translation hook
+
   const { t, formatRelativeTime, formatDate, formatTime } = useTranslation(language);
 
-  // Local state for fetched data (keeps UI reactive even if other modules import top-level exports)
   const [leaguesState, setLeaguesState] = useState<League[]>(leagues);
   const [teamsState, setTeamsState] = useState<Team[]>(teams);
   const [matchesState, setMatchesState] = useState<Match[]>(matches);
   const [newsState, setNewsState] = useState<News[]>(news);
 
-  // Fetch data from backend and update exported bindings and local state
   useEffect(() => {
     let mounted = true;
 
     const load = async () => {
       try {
-        // Always fetch all teams (don't filter by league), leagues and news
         const [fLeagues, fTeams, fMatches, fNews] = await Promise.all([
           api.getLeagues().catch(() => leagues),
-          api.getTeams().catch(() => teams),  // Get ALL teams, don't filter by league here
-          api.getMatches().catch(() => matches), // Get ALL matches instead of just upcoming
+          api.getTeams().catch(() => teams),  
+          api.getMatches().catch(() => matches), 
           api.getNews().catch(() => news)
         ]);
 
         if (!mounted) return;
-
-        console.log('AppContext loaded data:', {
-          leagues: fLeagues?.length,
-          teams: fTeams?.length,
-          matches: fMatches?.length,
-          news: fNews?.length
-        });
-        console.log('Raw matches from API:', fMatches);
-        if (fMatches?.length > 0) {
-          console.log('First match league:', fMatches[0].league, 'Sample matches:', fMatches.slice(0, 3).map(m => ({ home: m.homeTeam?.name, away: m.awayTeam?.name, league: m.league })));
-        }
-
-        // update exported bindings so modules importing `teams`, `leagues`, etc get fresh data
+       
         leagues = Array.isArray(fLeagues) ? fLeagues : leagues;
         teams = Array.isArray(fTeams) ? fTeams : teams;
         matches = Array.isArray(fMatches) ? fMatches : matches;
@@ -320,7 +298,7 @@ export const AppProvider: React.FC<AppProviderProps> = ({ children }) => {
         setMatchesState(matches);
         setNewsState(news);
       } catch (err) {
-        // keep mocks if API fails
+       
       }
     };
 

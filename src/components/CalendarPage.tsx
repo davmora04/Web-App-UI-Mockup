@@ -12,16 +12,10 @@ interface CalendarPageProps {
 export const CalendarPage: React.FC<CalendarPageProps> = ({ onViewMatchDetail }) => {
   const { selectedLeague, t, formatDate, formatTime, matches, leagues } = useApp();
 
-  console.log('CalendarPage - matches:', matches.length, 'selectedLeague:', selectedLeague);
-  console.log('CalendarPage - First match:', matches[0]);
-
   const currentLeague = leagues.find(l => l.id === selectedLeague);
   
-  // Filtrar partidos por liga seleccionada - mostrar todos si no hay coincidencias
   const leagueMatches = matches.filter(match => match.league === selectedLeague);
   const filteredMatches = leagueMatches.length > 0 ? leagueMatches : matches;
-  
-  console.log('CalendarPage - filteredMatches:', filteredMatches.length);
 
   // Agrupar partidos por fecha
   const groupedMatches = filteredMatches.reduce((groups, match) => {

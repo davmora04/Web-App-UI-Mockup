@@ -17,14 +17,8 @@ export const HomePage: React.FC<HomePageProps> = ({ onViewMatchDetail, onViewTea
   const { selectedLeague, selectedSeason, favorites, t, matches, leagues } = useApp();
   const [showDragDrop, setShowDragDrop] = React.useState(false);
 
-  console.log('HomePage - matches:', matches.length, 'selectedLeague:', selectedLeague);
-  console.log('HomePage - First match:', matches[0]);
-
-  // Filtrar partidos por liga seleccionada - mostrar todos si no hay matches con league
   const leagueMatches = matches.filter(match => match.league === selectedLeague);
   const filteredMatches = (leagueMatches.length > 0 ? leagueMatches : matches).slice(0, 5);
-  
-  console.log('HomePage - filteredMatches:', filteredMatches.length);
 
   const currentLeague = leagues.find(l => l.id === selectedLeague);
 

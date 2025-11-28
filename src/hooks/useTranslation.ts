@@ -35,7 +35,6 @@ export function useTranslation(language: Language) {
     } else if (diffInDays < 7) {
       return `${t('ago')} ${diffInDays} ${t('daysAgo')}`;
     } else {
-      // Format as date
       return targetDate.toLocaleDateString(language === 'es' ? 'es-ES' : 'en-US');
     }
   }, [language, t]);

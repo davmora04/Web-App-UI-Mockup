@@ -106,9 +106,7 @@ export function useFavorites() {
   }, [state.favorites]);
 
   const getFavoritesByLeague = useCallback((leagueId: string) => {
-    // This would need league information in Team interface
     return state.favorites.filter(team => {
-      // Mock logic - in real app, teams would have league property
       if (leagueId === 'laliga') return ['real-madrid', 'barcelona', 'atletico'].includes(team.id);
       if (leagueId === 'premier') return ['liverpool', 'arsenal', 'chelsea'].includes(team.id);
       if (leagueId === 'seriea') return ['juventus', 'milan', 'inter'].includes(team.id);

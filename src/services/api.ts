@@ -5,10 +5,8 @@ const json = async (res: Response) => {
   return res.json();
 };
 
-// Helpers to transform backend shapes into frontend shapes
 const transformLeague = (l: any) => {
   let id = l.leagueId || l._id || l.id;
-  // Map backend league IDs to frontend IDs for compatibility
   if (id === 'premier-league') id = 'premier';
   return {
     id,
@@ -21,7 +19,6 @@ const transformLeague = (l: any) => {
 
 const transformTeam = (t: any) => {
   const formArr = typeof t.form === 'string' ? t.form.split('').map((c: string) => (c === 'W' || c === 'D' || c === 'L' ? c : c)) : Array.isArray(t.form) ? t.form : [];
-  // Keep leagueId from backend for filtering in components, but map to frontend IDs
   let leagueId = t.leagueId || '';
   if (leagueId === 'premier-league') leagueId = 'premier';
   return {
@@ -38,23 +35,18 @@ const transformTeam = (t: any) => {
     goalsAgainst: t.goalsAgainst,
     goalDifference: t.goalDifference,
     form: formArr,
-    leagueId  // Include for filtering (mapped to frontend IDs)
+    leagueId
   } as any;
 };
 
 const transformMatch = (m: any, teamsMap: Record<string, any>) => {
-  // Backend stores homeTeam and awayTeam as strings (team names), need to lookup in teamsMap
-  // teamsMap can be indexed by name or id
   const home = teamsMap[m.homeTeam] || teamsMap[m.homeTeamId] || null;
   const away = teamsMap[m.awayTeam] || teamsMap[m.awayTeamId] || null;
   
-  // Map backend league IDs to frontend IDs
   let leagueId = m.leagueId || m.league;
-  console.log('transformMatch - Original leagueId:', leagueId);
   if (leagueId === 'premier-league') leagueId = 'premier';
   if (leagueId === 'la-liga') leagueId = 'laliga';
   if (leagueId === 'serie-a') leagueId = 'seriea';
-  console.log('transformMatch - Mapped leagueId:', leagueId);
   
   return {
     id: m._id || m.id,
@@ -112,11 +104,10 @@ export const getMatchesUpcoming = async (limit = 5) => {
   const res = await fetch(`${API_URL}/api/matches/upcoming?limit=${limit}`);
   const data = await json(res);
   const teams = await getTeams();
-  // Create map by both ID and name for lookup
   const map: Record<string, any> = {};
   teams.forEach((t: any) => {
     map[t.id] = t;
-    map[t.name] = t;  // Also map by name since backend stores team names in matches
+    map[t.name] = t;
   });
   return Array.isArray(data) ? data.map((m: any) => transformMatch(m, map)) : [];
 };
@@ -169,7 +160,6 @@ export const getNewsFeatured = async () => {
   return Array.isArray(data) ? data.map(transformNews) : [];
 };
 
-// Players module
 const transformPlayer = (p: any) => ({
   id: p._id || p.id,
   name: p.name,
@@ -200,7 +190,6 @@ export const searchPlayers = async (q: string) => {
   return Array.isArray(data) ? data.map(transformPlayer) : [];
 };
 
-// Statistics module
 export const getTeamStats = async (teamId: string) => {
   const res = await fetch(`${API_URL}/api/statistics/team/${encodeURIComponent(teamId)}`);
   return json(res);
@@ -221,7 +210,6 @@ export const register = async (payload: any) => {
 };
 
 export const login = async (payload: { username?: string; email?: string; password: string }) => {
-  // Backend expects email (LoginUserDto), so convert username to email if needed
   const loginPayload = {
     email: payload.email || payload.username || '',
     password: payload.password
@@ -249,20 +237,16 @@ export const getProfile = async () => {
   return fetchWithAuth('/api/users/me');
 };
 
-// Get player statistics
 export const getPlayerStats = async (playerName: string) => {
-  // First, search for the player by name to get their ID
   const playersRes = await fetch(`${API_URL}/api/players/search?q=${encodeURIComponent(playerName)}`);
   const players = await json(playersRes);
   
   if (!Array.isArray(players) || players.length === 0) {
-    return []; // Player not found
+    return [];
   }
   
-  // Get the first matching player's ID
   const playerId = players[0]._id || players[0].id;
   
-  // Now get their statistics
   const statsRes = await fetch(`${API_URL}/api/statistics/player/${playerId}`);
   return json(statsRes);
 };

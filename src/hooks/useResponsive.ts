@@ -13,13 +13,10 @@ export function useMobile(breakpoint: number = 768): boolean {
       setIsMobile(window.innerWidth < breakpoint);
     };
 
-    // Check on mount
     checkIsMobile();
 
-    // Add event listener
     window.addEventListener('resize', checkIsMobile);
 
-    // Cleanup
     return () => window.removeEventListener('resize', checkIsMobile);
   }, [breakpoint]);
 

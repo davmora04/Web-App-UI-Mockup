@@ -16,9 +16,8 @@ interface TeamDetailProps {
   onViewHeadToHead?: (opponentId: string) => void;
 }
 
-// Mock players data by team
 const mockTeamPlayers: Record<string, any[]> = {
-  'team-1': [ // Real Madrid
+  'team-1': [
     { id: 'p1', name: 'Thibaut Courtois', position: 'GK', number: 1, nationality: 'Belgium' },
     { id: 'p2', name: 'Dani Carvajal', position: 'DEF', number: 2, nationality: 'Spain' },
     { id: 'p3', name: 'Éder Militão', position: 'DEF', number: 3, nationality: 'Brazil' },
@@ -36,7 +35,7 @@ const mockTeamPlayers: Record<string, any[]> = {
     { id: 'p15', name: 'Federico Valverde', position: 'MID', number: 15, nationality: 'Uruguay' },
     { id: 'p16', name: 'Ferland Mendy', position: 'DEF', number: 23, nationality: 'France' },
   ],
-  'team-2': [ // FC Barcelona
+  'team-2': [
     { id: 'p20', name: 'Marc-André ter Stegen', position: 'GK', number: 1, nationality: 'Germany' },
     { id: 'p21', name: 'João Cancelo', position: 'DEF', number: 2, nationality: 'Portugal' },
     { id: 'p22', name: 'Alejandro Balde', position: 'DEF', number: 3, nationality: 'Spain' },
@@ -53,7 +52,7 @@ const mockTeamPlayers: Record<string, any[]> = {
     { id: 'p33', name: 'İlkay Gündoğan', position: 'MID', number: 22, nationality: 'Germany' },
     { id: 'p34', name: 'Jules Koundé', position: 'DEF', number: 23, nationality: 'France' },
   ],
-  'team-3': [ // Manchester City
+  'team-3': [
     { id: 'p40', name: 'Ederson', position: 'GK', number: 31, nationality: 'Brazil' },
     { id: 'p41', name: 'Kyle Walker', position: 'DEF', number: 2, nationality: 'England' },
     { id: 'p42', name: 'Rúben Dias', position: 'DEF', number: 3, nationality: 'Portugal' },
@@ -70,7 +69,7 @@ const mockTeamPlayers: Record<string, any[]> = {
     { id: 'p53', name: 'Manuel Akanji', position: 'DEF', number: 25, nationality: 'Switzerland' },
     { id: 'p54', name: 'Phil Foden', position: 'MID', number: 47, nationality: 'England' },
   ],
-  'liverpool': [ // Liverpool
+  'liverpool': [
     { id: 'p60', name: 'Alisson', position: 'GK', number: 1, nationality: 'Brazil' },
     { id: 'p61', name: 'Trent Alexander-Arnold', position: 'DEF', number: 66, nationality: 'England' },
     { id: 'p62', name: 'Virgil van Dijk', position: 'DEF', number: 4, nationality: 'Netherlands' },
@@ -87,7 +86,7 @@ const mockTeamPlayers: Record<string, any[]> = {
     { id: 'p73', name: 'Joe Gomez', position: 'DEF', number: 2, nationality: 'England' },
     { id: 'p74', name: 'Caoimhin Kelleher', position: 'GK', number: 62, nationality: 'Ireland' },
   ],
-  'arsenal': [ // Arsenal
+  'arsenal': [
     { id: 'p80', name: 'David Raya', position: 'GK', number: 22, nationality: 'Spain' },
     { id: 'p81', name: 'Ben White', position: 'DEF', number: 4, nationality: 'England' },
     { id: 'p82', name: 'William Saliba', position: 'DEF', number: 2, nationality: 'France' },
@@ -104,7 +103,7 @@ const mockTeamPlayers: Record<string, any[]> = {
     { id: 'p93', name: 'Takehiro Tomiyasu', position: 'DEF', number: 18, nationality: 'Japan' },
     { id: 'p94', name: 'Aaron Ramsdale', position: 'GK', number: 1, nationality: 'England' },
   ],
-  'chelsea': [ // Chelsea
+  'chelsea': [
     { id: 'p100', name: 'Robert Sánchez', position: 'GK', number: 1, nationality: 'Spain' },
     { id: 'p101', name: 'Reece James', position: 'DEF', number: 24, nationality: 'England' },
     { id: 'p102', name: 'Thiago Silva', position: 'DEF', number: 6, nationality: 'Brazil' },
@@ -121,7 +120,7 @@ const mockTeamPlayers: Record<string, any[]> = {
     { id: 'p113', name: 'Benoît Badiashile', position: 'DEF', number: 4, nationality: 'France' },
     { id: 'p114', name: 'Đorđe Petrović', position: 'GK', number: 28, nationality: 'Serbia' },
   ],
-  'juventus': [ // Juventus
+  'juventus': [
     { id: 'p120', name: 'Wojciech Szczęsny', position: 'GK', number: 1, nationality: 'Poland' },
     { id: 'p121', name: 'Danilo', position: 'DEF', number: 6, nationality: 'Brazil' },
     { id: 'p122', name: 'Gleison Bremer', position: 'DEF', number: 3, nationality: 'Brazil' },
@@ -138,7 +137,7 @@ const mockTeamPlayers: Record<string, any[]> = {
     { id: 'p133', name: 'Kenan Yıldız', position: 'FWD', number: 15, nationality: 'Turkey' },
     { id: 'p134', name: 'Mattia Perin', position: 'GK', number: 36, nationality: 'Italy' },
   ],
-  'milan': [ // AC Milan
+  'milan': [
     { id: 'p140', name: 'Mike Maignan', position: 'GK', number: 16, nationality: 'France' },
     { id: 'p141', name: 'Davide Calabria', position: 'DEF', number: 2, nationality: 'Italy' },
     { id: 'p142', name: 'Fikayo Tomori', position: 'DEF', number: 23, nationality: 'England' },
@@ -155,7 +154,7 @@ const mockTeamPlayers: Record<string, any[]> = {
     { id: 'p153', name: 'Samuel Chukwueze', position: 'FWD', number: 21, nationality: 'Nigeria' },
     { id: 'p154', name: 'Marco Sportiello', position: 'GK', number: 57, nationality: 'Italy' },
   ],
-  'inter': [ // Inter Milan
+  'inter': [
     { id: 'p160', name: 'Yann Sommer', position: 'GK', number: 1, nationality: 'Switzerland' },
     { id: 'p161', name: 'Benjamin Pavard', position: 'DEF', number: 28, nationality: 'France' },
     { id: 'p162', name: 'Francesco Acerbi', position: 'DEF', number: 15, nationality: 'Italy' },
@@ -174,7 +173,6 @@ const mockTeamPlayers: Record<string, any[]> = {
   ]
 };
 
-// Add aliases for backend team IDs
 mockTeamPlayers['real-madrid'] = mockTeamPlayers['team-1'];
 mockTeamPlayers['realmadrid'] = mockTeamPlayers['team-1'];
 mockTeamPlayers['barcelona'] = mockTeamPlayers['team-2'];
@@ -194,8 +192,6 @@ export const TeamDetail: React.FC<TeamDetailProps> = ({ teamId, onBack, onViewMa
 
   const isFavorite = favorites.some(fav => fav.id === teamId);
   
-  // Get mock players for this team
-  // Try exact match first, then lowercase, then check if mock data exists for team name in lowercase
   const normalizedId = teamId.toLowerCase();
   const teamNameLower = team?.name?.toLowerCase().replace(/\s+/g, '') || '';
   const players = mockTeamPlayers[teamId] || 
@@ -203,7 +199,6 @@ export const TeamDetail: React.FC<TeamDetailProps> = ({ teamId, onBack, onViewMa
                   (teamNameLower ? mockTeamPlayers[teamNameLower] : null) || 
                   [];
 
-  // Fetch player stats when a player is selected
   React.useEffect(() => {
     if (selectedPlayer) {
       setLoadingStats(true);
